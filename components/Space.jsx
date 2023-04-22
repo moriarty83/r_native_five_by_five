@@ -1,65 +1,56 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
-  View,
-  TextInput,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
-import tw from 'twrnc';
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+const squareSize = windowWidth < windowHeight ? windowWidth / 5 - 5 : windowHeight / 5 - 5
 
-export default class Space extends Component {
-  
-
-  constructor(props){
-    super(props)
-    console.log(props)
-    this.state = {
-    activeLetter: false,
-    text: null,
-    inWordAcross: false,
-    inWordDown: false,
-    score: 0,
-    selection: {start: 0, end: 0}
-  };
-}
+const Space = (props) => {
+  const [text, setText] = useState(null);
+  const [selection, setSelection] = useState({start: 0, end: 0});
 
   /////////// METHODS //////////
-  handleTextChange = (txt)=>{
-    this.setState({text: txt})
-    if(this.state.text){
-      this.setState({selection: {start: 1, end: 1}})
+  const handleTextChange = (txt)=>{
+    setText(txt);
+    if(txt){
+      setSelection({start: 1, end: 1});
     }
     else{
-      this.setState({selection: {start: 0, end: 0}})
+      setSelection({start: 0, end: 0});
     }
-  }
+  };
 
-  render() {
-    let renderStyles = this.props.isActiveLetter ? [styles.letter, styles.activeLetter] : [styles.letter, styles.inactiveLetter]
-    return (
-      <TouchableOpacity onPress={()=>this.props.clickLetter(this.props.index)} onClick={() => this.props.clickLetter(244)}>
-        <Text onClick={() => console.log("Clicked")} value={this.state.text} style={renderStyles} maxLength={1} selection={this.state.selection} onChangeText={newText => this.handleTextChange(newText)}></Text>
-      </TouchableOpacity>
-    );
-  }
+  let renderStyles = props.isActiveLetter ? [styles.letter, styles.activeLetter] : props.isActiveWord ? [styles.letter, styles.activeWord]:[styles.letter, styles.inactiveLetter];
+  return (
+    <TouchableOpacity onPress={()=>props.clickLetter(props.index)} >
+      <Text onClick={() => console.log("Clicked")} value={text} style={renderStyles} maxLength={1} selection={selection} onChangeText={newText => handleTextChange(newText)}>{props.content}</Text>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
   letter: {
-    width: 65,
-    height: 65,
+    width: squareSize,
+    height: squareSize,
     margin: 2,
     textAlign: 'center',
     fontSize: 48,
     fontWeight: "700",
-    backgroundColor: '#fff',
   },
   activeLetter:{
-    backgroundColor: '#ffe093'
+    backgroundColor: '#f8d680'
+  },
+  activeWord:{
+    backgroundColor: '#fbefd0'
   },
   inactiveLetter:{
     backgroundColor: '#fff'
-  }
+  },
 });
+
+export default Space;

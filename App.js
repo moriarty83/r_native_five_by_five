@@ -1,23 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
+import { createContext, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Board from './components/Board';
+import {InputContext} from './components/InputContext';
 
 export default function App() {
+  const [Input, setInput] = useState()
+  const value = { Input, setInput }
+  console.log(Input)
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-      <Board style={styles.board}/>
-    </View>
-  );
-}
+      <View style={styles.container}>
+        <InputContext.Provider value={value} >
+        <Board style={{flex: 1}} />
+        </InputContext.Provider>
+      </View>
+    );
+  };
+  
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: '100%',
-    width: '100%',
     backgroundColor: '#333333',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    
+  },
 
-  }
 });

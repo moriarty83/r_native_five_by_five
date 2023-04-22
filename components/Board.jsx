@@ -1,104 +1,139 @@
-import React, { Component, useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Dimensions
-} from 'react-native';
-import tw from 'twrnc';
-import Space from './Space';
+import React, {createContext, Component, useContext, useState, useEffect } from "react";
+import { StyleSheet, Text, View, FlatList, Dimensions } from "react-native";
+import { useKeyboard } from "@react-native-community/hooks";
+import Space from "./Space";
+import Keyboard from "./Keyboard";
+import { InputContext } from "./InputContext";
 
 class Letter {
-  constructor(index, row, column, fixed){
-      this.index = index
-      this.row = row,
-      this.col = column
-      this.fixed = fixed
-      this.inWordAcross = false
-      this.inWordDown = false
-      this.score = 0
-      this.selectedLetter = false
-      this.text = null
+  constructor(index, row, column, fixed) {
+    this.index = index;
+    (this.row = row), (this.col = column);
+    this.fixed = fixed;
+    this.inWordAcross = false;
+    this.inWordDown = false;
+    this.score = 0;
+    this.selectedLetter = false;
+    this.text = null;
   }
 }
 
 class Word {
-  constructor(index, across, fixed){
-      this.index = index,
-      this.isAcross = across
-      this.fixed = fixed
-      this.wordExists = false
-      this.inWordDown = false
-      this.score = 0
-      this.activeLetter = false
+  constructor(index, across, fixed) {
+    (this.index = index), (this.isAcross = across);
+    this.fixed = fixed;
+    this.wordExists = false;
+    this.inWordDown = false;
+    this.score = 0;
+    this.activeLetter = false;
+    this.activeWord = false;
   }
 }
 
-
-const windowWidth= Dimensions.get('window').width
-const windowHeifght = Dimensions.get('window').height
-
-const GenerateLetters = ()=>{
-  let letters = []
-  let index = 0
-    for(let i = 0; i < 5; i++){
-      for (let j = 0; j < 5; j++){
-        letter = new Letter(index, i, j, false)
-        letters.push(letter)
-        index += 1
-      }
+const GenerateLetters = () => {
+  let letters = [];
+  let index = 0;
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      letter = new Letter(index, i, j, false);
+      letters.push(letter);
+      index += 1;
     }
-  return letters
-}
+  }
+  return letters;
+};
 
-
-export default class Board extends Component {
+const Board=(props)=>{
+  //////////// CONTEXT ////////////
+  const inputContext = useContext(InputContext)
+  //////////// STATE //////////////
+  const [letters, setLetters] = useState(GenerateLetters());
+  const [selectedLetter, setSelectedLetter] = useState(0);
+  const [selectAcross, setSelectAcross] = useState(true);
+  const [keyboardStatus, setKeyboardStatus] = useState("");
   
-  state = {
-    letters: GenerateLetters(),
-    selectedLetter: 0,
-    selectAcross: true
+  //////////// METHODS //////////
+  const handleSpaceClicked = (index) => {
+  let tempSelectAcross = selectAcross;
+  if (selectedLetter == index) {
+  tempSelectAcross = !tempSelectAcross;
+  setSelectAcross(tempSelectAcross);
   }
-
-  renderSpace = ({item})=>(
-    <Space key={item.key} row={item.row} col={item.col} index={item.index} clickLetter={this.letterClicked} isActiveLetter={item.selectedLetter}/>
-    );
-
-  letterClicked = (index)=>{
-    console.log("Letter Clicked: " + index)
-    this.state.selectedLetter = index
-        // // 1. Make a shallow copy of the items
-        let items = [...this.state.letters];
-        for (item of items){
-          if(item.index == index){
-            item.selectedLetter = true
-          }
-          else{
-            item.selectedLetter = false
-          }
-        }
-        this.setState({letters: items})
-        console.log(this.state.letters)
+  setSelectedLetter(index);
+  // // 1. Make a shallow copy of the items
+  let items = [...letters];
+  for (let item of items) {
+  if (item.index == index) {
+  item.selectedLetter = true;
+  } else {
+  item.selectedLetter = false;
+  // Check to see if the letter should have a secondary select color.
+  if (tempSelectAcross) {
+  if (item.row == items[index].row) {
+  item.activeWord = true;
+  } else {
+  item.activeWord = false;
   }
-
-  render() {
-    return (
-      <FlatList data={this.state.letters} renderItem={this.renderSpace} numColumns={5} contentContainerStyle={styles.container}>
-        
-      </FlatList>
-    );
+  } else if (!tempSelectAcross) {
+  if (item.col == items[index].col) {
+  item.activeWord = true;
+  } else {
+  item.activeWord = false;
   }
-}
+  }
+  }
+  }
+  setLetters(items);
+  };
+  
+  const selectWord = () => {
+  if (selectAcross) {
+  let row = Math.floor(selectedLetter / 5);
+  for (let i = row; i < row + 5; i++) {}
+  }
+  };
+  ///////////// RENDER ////////////
+  const renderSpace = ({ item }) => (
+  <Space
+     key={item.index}
+     index={item.index}
+     clickLetter={handleSpaceClicked}
+     isActiveLetter={item.selectedLetter}
+     isActiveWord={item.activeWord}
+   />
+  );
+  
+  
+  useEffect(()=>{
+    console.log(inputContext.Input)
+  })
+  return (
+  <View style={styles.container}>
+  <FlatList
+       style={styles.flatList}
+       data={letters}
+       renderItem={renderSpace}
+       numColumns={5}
+       />
+  <Keyboard />
+  </View>
+  );
+  }
+  
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-
-    backgroundColor: '#333333',
-    justifyContent: 'center',
-    alignItems: 'center'
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    backgroundColor: "#333333",
+    height: "75%"
+  },
+  flatList: {
+    flexGrow: 0
   }
 });
 
+export default Board;
