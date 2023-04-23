@@ -1,55 +1,74 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
+import { useAppState } from "../AppState";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const squareSize = windowWidth < windowHeight ? windowWidth / 5 - 5 : windowHeight / 5 - 5
+const squareSize =
+  windowWidth < windowHeight ? windowWidth / 5 - 5 : windowHeight / 5 - 5;
 
 const Space = (props) => {
   const [text, setText] = useState(null);
-  const [selection, setSelection] = useState({start: 0, end: 0});
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
+
+  const { state, dispatch } = useAppState();
 
   /////////// METHODS //////////
-  const handleTextChange = (txt)=>{
-    setText(txt);
-    if(txt){
-      setSelection({start: 1, end: 1});
-    }
-    else{
-      setSelection({start: 0, end: 0});
+  const handleSpaceClick = () => {
+    console.log("handleSpaceClick");
+    dispatch({
+      type: "selectSpace",
+      payload: {
+        activeSpace: props.index,
+        activeRow: props.row,
+        activeCol: props.col,
+      },
+    });
+  };
+
+  const selectStyle = () => {
+    if (state.activeSpace == props.index) {
+      return [styles.letter, styles.activeLetter];
+    } else if (
+      (state.selectAcross && props.row == state.activeRow) ||
+      (!state.selectAcross && props.col == state.activeCol)
+    ) {
+      return [styles.letter, styles.activeWord];
+    } else {
+      return [styles.letter, styles.inactiveLetter];
     }
   };
 
-  let renderStyles = props.isActiveLetter ? [styles.letter, styles.activeLetter] : props.isActiveWord ? [styles.letter, styles.activeWord]:[styles.letter, styles.inactiveLetter];
   return (
-    <TouchableOpacity onPress={()=>props.clickLetter(props.index)} >
-      <Text onClick={() => console.log("Clicked")} value={text} style={renderStyles} maxLength={1} selection={selection} onChangeText={newText => handleTextChange(newText)}>{props.content}</Text>
+    <TouchableOpacity onPress={() => handleSpaceClick()}>
+      <Text
+        value={text}
+        style={selectStyle()}
+        onChangeText={(newText) => handleTextChange(newText)}
+      >
+        {state.chars[props.index]}
+      </Text>
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   letter: {
     width: squareSize,
     height: squareSize,
     margin: 2,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 48,
     fontWeight: "700",
   },
-  activeLetter:{
-    backgroundColor: '#f8d680'
+  activeLetter: {
+    backgroundColor: "#f8d680",
   },
-  activeWord:{
-    backgroundColor: '#fbefd0'
+  activeWord: {
+    backgroundColor: "#fbefd0",
   },
-  inactiveLetter:{
-    backgroundColor: '#fff'
+  inactiveLetter: {
+    backgroundColor: "#fff",
   },
 });
 

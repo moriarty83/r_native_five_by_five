@@ -1,6 +1,5 @@
-import React, {createContext, Component, useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View, FlatList, Dimensions } from "react-native";
-import { useKeyboard } from "@react-native-community/hooks";
 import Space from "./Space";
 import Keyboard from "./Keyboard";
 import { InputContext } from "./InputContext";
@@ -35,7 +34,7 @@ const GenerateLetters = () => {
   let index = 0;
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
-      letter = new Letter(index, i, j, false);
+      const letter = { index: index, row: i, col: j };
       letters.push(letter);
       index += 1;
     }
@@ -43,83 +42,71 @@ const GenerateLetters = () => {
   return letters;
 };
 
-const Board=(props)=>{
+const Board = (props) => {
   //////////// CONTEXT ////////////
-  const inputContext = useContext(InputContext)
+  const inputContext = useContext(InputContext);
   //////////// STATE //////////////
-  const [letters, setLetters] = useState(GenerateLetters());
   const [selectedLetter, setSelectedLetter] = useState(0);
   const [selectAcross, setSelectAcross] = useState(true);
   const [keyboardStatus, setKeyboardStatus] = useState("");
-  
+
   //////////// METHODS //////////
   const handleSpaceClicked = (index) => {
-  let tempSelectAcross = selectAcross;
-  if (selectedLetter == index) {
-  tempSelectAcross = !tempSelectAcross;
-  setSelectAcross(tempSelectAcross);
-  }
-  setSelectedLetter(index);
-  // // 1. Make a shallow copy of the items
-  let items = [...letters];
-  for (let item of items) {
-  if (item.index == index) {
-  item.selectedLetter = true;
-  } else {
-  item.selectedLetter = false;
-  // Check to see if the letter should have a secondary select color.
-  if (tempSelectAcross) {
-  if (item.row == items[index].row) {
-  item.activeWord = true;
-  } else {
-  item.activeWord = false;
-  }
-  } else if (!tempSelectAcross) {
-  if (item.col == items[index].col) {
-  item.activeWord = true;
-  } else {
-  item.activeWord = false;
-  }
-  }
-  }
-  }
-  setLetters(items);
+    let tempSelectAcross = selectAcross;
+    if (selectedLetter == index) {
+      tempSelectAcross = !tempSelectAcross;
+      setSelectAcross(tempSelectAcross);
+    }
+    setSelectedLetter(index);
+    // // 1. Make a shallow copy of the items
+    let items = [...letters];
+    for (let item of items) {
+      if (item.index == index) {
+        item.selectedLetter = true;
+      } else {
+        item.selectedLetter = false;
+        // Check to see if the letter should have a secondary select color.
+        if (tempSelectAcross) {
+          if (item.row == items[index].row) {
+            item.activeWord = true;
+          } else {
+            item.activeWord = false;
+          }
+        } else if (!tempSelectAcross) {
+          if (item.col == items[index].col) {
+            item.activeWord = true;
+          } else {
+            item.activeWord = false;
+          }
+        }
+      }
+    }
+    setLetters(items);
   };
-  
+
   const selectWord = () => {
-  if (selectAcross) {
-  let row = Math.floor(selectedLetter / 5);
-  for (let i = row; i < row + 5; i++) {}
-  }
+    if (selectAcross) {
+      let row = Math.floor(selectedLetter / 5);
+      for (let i = row; i < row + 5; i++) {}
+    }
   };
   ///////////// RENDER ////////////
   const renderSpace = ({ item }) => (
-  <Space
-     key={item.index}
-     index={item.index}
-     clickLetter={handleSpaceClicked}
-     isActiveLetter={item.selectedLetter}
-     isActiveWord={item.activeWord}
-   />
+    <Space key={item.index} index={item.index} row={item.row} col={item.col} />
   );
-  
-  
-  useEffect(()=>{
-    console.log(inputContext.Input)
-  })
+
   return (
-  <View style={styles.container}>
-  <FlatList
-       style={styles.flatList}
-       data={letters}
-       renderItem={renderSpace}
-       numColumns={5}
-       />
-  <Keyboard />
-  </View>
+    <View style={styles.container}>
+      <FlatList
+        style={styles.flatList}
+        data={GenerateLetters()}
+        renderItem={renderSpace}
+        numColumns={5}
+      />
+      <Keyboard />
+    </View>
   );
-  }
-  
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -129,11 +116,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     backgroundColor: "#333333",
-    height: "75%"
+    height: "75%",
   },
   flatList: {
-    flexGrow: 0
-  }
+    flexGrow: 0,
+  },
 });
 
 export default Board;

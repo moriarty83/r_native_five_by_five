@@ -1,61 +1,65 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Dimensions,
-} from 'react-native';
-import tw from 'twrnc';
-import { InputContext } from './InputContext';
+} from "react-native";
+import tw from "twrnc";
+import { InputContext } from "./InputContext";
+import { useAppState } from "../AppState";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const charWidth =  windowWidth / 10 - 5
+const charWidth = windowWidth / 10 - 5;
 
-const onlyLettersAndNumbers = (str)=>{
+const onlyLettersAndNumbers = (str) => {
   return /^[A-Za-z0-9]*$/.test(str);
-}
+};
 
 const Char = (props) => {
-    const { Input, setInput } = useContext(InputContext);
+  const { Input, setInput } = useContext(InputContext);
 
+  const { state, dispatch } = useAppState();
 
-  const handleTextChange = (txt) => {
-    setText(txt);
-    if(text){
-      setInput("W");
-    }
-  }
+  const handleCharClick = () => {
+    console.log("handleCharClick");
+    dispatch({ type: "enterLetter", payload: props.char });
+  };
 
-  const widthStyle = onlyLettersAndNumbers(props.char) ? styles.standardChar : styles.specialChar;
+  const widthStyle = onlyLettersAndNumbers(props.char)
+    ? styles.standardChar
+    : styles.specialChar;
 
   return (
-    <TouchableOpacity onPress={() => setInput(props.char)}>
-      <Text style={[styles.char, widthStyle]} maxLength={1} >{props.char}</Text>
+    <TouchableOpacity onPress={() => handleCharClick()}>
+      <Text style={[styles.char, widthStyle]} maxLength={1}>
+        {props.char}
+      </Text>
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   char: {
     height: 48,
     margin: 2,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 32,
     fontWeight: "700",
-    backgroundColor: '#bbbbbb',
+    backgroundColor: "#bbbbbb",
   },
-  standardChar:{
+  standardChar: {
     width: charWidth,
   },
-  specialChar:{
-    width: charWidth*1.5,
+  specialChar: {
+    width: charWidth * 1.5,
   },
-  container:{
+  container: {
     flex: 1,
-    flexDirection: "row"
-  }
+    flexDirection: "row",
+  },
 });
 
 export default Char;

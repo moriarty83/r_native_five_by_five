@@ -12,6 +12,7 @@
     "@react-native-community/hooks": "^3.0.0",
     "expo": "~48.0.11",
     "expo-status-bar": "~1.4.4",
+    "js-rando": "^1.0.8",
     "react": "18.2.0",
     "react-native": "0.71.6",
     "twrnc": "^3.6.0"
