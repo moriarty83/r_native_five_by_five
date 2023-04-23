@@ -9,7 +9,7 @@ const rando = new Rando();
 const genrateFixed = () => {
   fixed = {};
   while (Object.keys(fixed).length < 3) {
-    fixed[rando.RandomInt(0, 26)] = String.fromCharCode(
+    fixed[rando.RandomInt(0, 25)] = String.fromCharCode(
       rando.RandomInt(65, 91)
     );
   }

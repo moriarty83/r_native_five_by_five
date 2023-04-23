@@ -8,9 +8,6 @@ const squareSize =
   windowWidth < windowHeight ? windowWidth / 5 - 5 : windowHeight / 5 - 5;
 
 const Space = (props) => {
-  const [text, setText] = useState(null);
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
-
   const { state, dispatch } = useAppState();
 
   /////////// METHODS //////////
@@ -27,26 +24,36 @@ const Space = (props) => {
   };
 
   const selectStyle = () => {
+    let selectedStyles = [];
     if (state.activeSpace == props.index) {
-      return [styles.letter, styles.activeLetter];
+      selectedStyles = [styles.letter, styles.activeLetter];
     } else if (
       (state.selectAcross && props.row == state.activeRow) ||
       (!state.selectAcross && props.col == state.activeCol)
     ) {
-      return [styles.letter, styles.activeWord];
+      selectedStyles = [styles.letter, styles.activeWord];
     } else {
-      return [styles.letter, styles.inactiveLetter];
+      selectedStyles = [styles.letter, styles.inactiveLetter];
     }
+    if (state.fixedChars[props.index.toString()]) {
+      selectedStyles.push(styles.fixedLetter);
+    }
+    return selectedStyles;
+  };
+
+  const getChar = () => {
+    return state.fixedChars[props.index.toString()]
+      ? state.fixedChars[props.index.toString()]
+      : state.chars[props.index];
   };
 
   return (
     <TouchableOpacity onPress={() => handleSpaceClick()}>
       <Text
-        value={text}
         style={selectStyle()}
         onChangeText={(newText) => handleTextChange(newText)}
       >
-        {state.chars[props.index]}
+        {getChar()}
       </Text>
     </TouchableOpacity>
   );
@@ -58,6 +65,7 @@ const styles = StyleSheet.create({
     height: squareSize,
     margin: 2,
     textAlign: "center",
+    alignItems: "center",
     fontSize: 48,
     fontWeight: "700",
   },
@@ -69,6 +77,9 @@ const styles = StyleSheet.create({
   },
   inactiveLetter: {
     backgroundColor: "#fff",
+  },
+  fixedLetter: {
+    textDecorationLine: "underline",
   },
 });
 
