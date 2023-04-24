@@ -38,18 +38,27 @@ const reducer = (state, action) => {
           ? { selectAcross: !state.selectAcross }
           : action.payload;
       newState = { ...state, ...payload };
-      console.log(newState);
       return newState;
 
     case "enterLetter":
+      let nextSpace = {};
+
+      if (state.selectAcross) {
+        nextSpace["activeCol"] = (state.activeSpace + 1) % 5;
+        nextSpace["activeSpace"] = state.activeRow * 5 + nextSpace["activeCol"];
+      } else {
+        nextSpace["activeRow"] = (state.activeRow + 1) % 5;
+        nextSpace["activeSpace"] = nextSpace.activeRow * 5 + state["activeCol"];
+      }
       // If letter is fixed, bail out!
       if (state.fixedChars[state.activeSpace.toString()]) {
-        return state;
+        return { ...state, ...nextSpace };
       }
-
       chars = [...state.chars];
       chars[state.activeSpace] = action.payload;
-      newState = { ...state, chars };
+
+      console.log(nextSpace);
+      newState = { ...state, chars, ...nextSpace };
       return newState;
     case "toggleDirection":
       newState = { ...state, myIngredients: action.payload };
