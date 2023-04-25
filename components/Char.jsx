@@ -24,7 +24,6 @@ const Char = (props) => {
   const { state, dispatch } = useAppState();
 
   const handleCharClick = () => {
-    console.log("handleCharClick");
     dispatch({ type: "enterLetter", payload: props.char });
   };
 

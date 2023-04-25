@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   FlatList,
@@ -6,36 +6,45 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-} from 'react-native';
-import Char from './Char';
-import { InputContext } from './InputContext';
+} from "react-native";
+import Char from "./Char";
+import { InputContext } from "./InputContext";
 
 const windowWidth = Dimensions.get("window").width;
 
 const Keyboard = (props) => {
   const [activeLetter, setActiveLetter] = useState(false);
-  const [chars1] = useState(['q','w','e','r','t','y','u','i','o','p']);
-  const [chars2] = useState(['a','s','d','f','g','h','j','k','l']);
-  const [chars3] = useState(['\u21E5','z', 'x', 'c', 'v', 'b', 'n', 'm', '\u232B']);
+  const [chars1] = useState(["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"]);
+  const [chars2] = useState(["A", "S", "D", "F", "G", "H", "J", "K", "L"]);
+  const [chars3] = useState([
+    "\u21E5",
+    "Z",
+    "X",
+    "C",
+    "V",
+    "B",
+    "N",
+    "M",
+    "\u232B",
+  ]);
 
   /////////// METHODS //////////
-  const handleTextChange = (txt)=>{
+  const handleTextChange = (txt) => {
     // update state
     // ...
-  }
+  };
 
-  const renderChar = ({ item }) => (
-    <Char
-      index={item}
-      char={item}
-    />
-  );
+  const renderChar = ({ item }) => <Char index={item} char={item} />;
 
-  let renderStyles = props.isActiveLetter ? [styles.letter, styles.activeLetter] : props.isActiveWord ? [styles.letter, styles.activeWord]:[styles.letter, styles.inactiveLetter];
+  let renderStyles = props.isActiveLetter
+    ? [styles.letter, styles.activeLetter]
+    : props.isActiveWord
+    ? [styles.letter, styles.activeWord]
+    : [styles.letter, styles.inactiveLetter];
 
   return (
     <View style={styles.keyboard}>
-      <View style={{height:55}}>
+      <View style={{ height: 55 }}>
         <FlatList
           contentContainerStyle={styles.keyrow}
           data={chars1}
@@ -43,7 +52,7 @@ const Keyboard = (props) => {
           numColumns={10}
         />
       </View>
-      <View style={{height:55}}>
+      <View style={{ height: 55 }}>
         <FlatList
           contentContainerStyle={styles.keyrow}
           data={chars2}
@@ -51,7 +60,7 @@ const Keyboard = (props) => {
           numColumns={9}
         />
       </View>
-      <View style={{height:60}}>
+      <View style={{ height: 60 }}>
         <FlatList
           contentContainerStyle={styles.keyrow}
           data={chars3}
@@ -61,15 +70,15 @@ const Keyboard = (props) => {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  keyboard:{
+  keyboard: {
     flex: 1,
     justifyContent: "flex-start",
     flexGrow: 0,
   },
-  keyrow:{
+  keyrow: {
     flex: 1,
     width: windowWidth,
     justifyContent: "center",

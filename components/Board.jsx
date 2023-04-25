@@ -48,7 +48,6 @@ const Board = (props) => {
   //////////// STATE //////////////
   const [selectedLetter, setSelectedLetter] = useState(0);
   const [selectAcross, setSelectAcross] = useState(true);
-  const [keyboardStatus, setKeyboardStatus] = useState("");
 
   //////////// METHODS //////////
   const handleSpaceClicked = (index) => {

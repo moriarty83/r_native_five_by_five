@@ -12,7 +12,6 @@ const Space = (props) => {
 
   /////////// METHODS //////////
   const handleSpaceClick = () => {
-    console.log("handleSpaceClick");
     dispatch({
       type: "selectSpace",
       payload: {
@@ -24,6 +23,7 @@ const Space = (props) => {
   };
 
   const selectStyle = () => {
+    const char = state.chars[props.index];
     let selectedStyles = [];
     if (state.activeSpace == props.index) {
       selectedStyles = [styles.letter, styles.activeLetter];
@@ -35,6 +35,21 @@ const Space = (props) => {
     } else {
       selectedStyles = [styles.letter, styles.inactiveLetter];
     }
+
+    if (
+      (char.across == true && char.down == true && char.fixed == false) ||
+      (char.across == false && char.down == true && char.fixed == true) ||
+      (char.across == true && char.down == false && char.fixed == true)
+    ) {
+      selectedStyles.push(styles.twoWords);
+    } else if (
+      (char.across == true && char.down == false && char.fixed == false) ||
+      (char.across == false && char.down == true && char.fixed == false)
+    ) {
+      selectedStyles.push(styles.oneWord);
+    } else if (char.across == true && char.down == true && char.fixed == true) {
+      selectedStyles.push(styles.twoWordsFixed);
+    }
     if (state.fixedChars[props.index.toString()]) {
       selectedStyles.push(styles.fixedLetter);
     }
@@ -42,9 +57,7 @@ const Space = (props) => {
   };
 
   const getChar = () => {
-    return state.fixedChars[props.index.toString()]
-      ? state.fixedChars[props.index.toString()]
-      : state.chars[props.index];
+    return state.chars[props.index].char;
   };
 
   return (
@@ -68,12 +81,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 48,
     fontWeight: "700",
+    backgroundColor: "#fff",
   },
   activeLetter: {
-    backgroundColor: "#f8d680",
+    borderColor: "#ffc229",
+    borderWidth: 5,
   },
   activeWord: {
-    backgroundColor: "#fbefd0",
+    borderColor: "#fddc88",
+    borderWidth: 5,
   },
   inactiveLetter: {
     backgroundColor: "#fff",
@@ -81,6 +97,26 @@ const styles = StyleSheet.create({
   fixedLetter: {
     textDecorationLine: "underline",
   },
+  oneWord: {
+    backgroundColor: "#99c98f",
+  },
+  twoWords: {
+    backgroundColor: "#8b98fc",
+  },
+  twoWordsFixed: {
+    backgroundColor: "#e0b14a",
+  },
 });
 
 export default Space;
+
+/*
+palette_green = pygame.Color("#99c98f") 
+palette_blue = pygame.Color("#8b98fc")
+palette_cyan1 = pygame.Color("#2fa89e")
+palette_cyan2 = pygame.Color("#5dc2b9")
+palette_light_gray = pygame.Color("#fff1bd")
+palette_dark_gray = pygame.Color("#3f3f3f")
+palette_gold = pygame.Color("#e0b14a")
+palette_purple = pygame.Color("#8460a3")
+*/
