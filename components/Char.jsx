@@ -6,13 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import tw from "twrnc";
-import { InputContext } from "./InputContext";
 import { useAppState } from "../AppState";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const charWidth = windowWidth / 10 - 5;
+const charWidth = windowWidth / 10 - 4;
 
 const onlyLettersAndNumbers = (str) => {
   return /^[A-Za-z0-9]*$/.test(str);

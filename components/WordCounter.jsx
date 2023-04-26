@@ -6,39 +6,45 @@ const WordCounter = (props) => {
   //////////// STATE //////////////
   const { state, dispatch } = useAppState();
 
-  const data = ["d", "3", "8"];
   //////////// METHODS //////////
-  const string = "hello";
   ///////////// RENDER ////////////
 
   return (
     <View style={styles.counterparent}>
       <View styles={styles.counter}>
-        <Text style={styles.whitetext}>Across</Text>
-        {state.acrossWords.map((item, index) => {
-          return (
-            <View key={`${index}across`} style={styles.item}>
-              <Text style={styles.whitetext}>{index + 1}</Text>
-              <Text style={styles.greentext}>
-                {state.acrossWords[index] == true ? "\u2713" : ""}
-              </Text>
-            </View>
-          );
-        })}
+        <Text style={styles.blacktext}>Across</Text>
+        <View style={styles.items}>
+          {state.acrossWords.map((item, index) => {
+            return (
+              <View
+                key={`${index}across`}
+                style={
+                  state.acrossWords[index] == true
+                    ? styles.itemgreen
+                    : styles.item
+                }
+              ></View>
+            );
+          })}
+        </View>
       </View>
 
       <View styles={styles.counter}>
-        <Text style={styles.whitetext}>Down</Text>
-        {state.downWords.map((item, index) => {
-          return (
-            <View key={`${index}down`} style={styles.item}>
-              <Text style={styles.whitetext}>{index + 1}</Text>
-              <Text style={styles.greentext}>
-                {state.downWords[index] == true ? "\u2713" : ""}
-              </Text>
-            </View>
-          );
-        })}
+        <Text style={styles.blacktext}>Down</Text>
+        <View style={styles.items}>
+          {state.downWords.map((item, index) => {
+            return (
+              <View
+                key={`${index}down`}
+                style={
+                  state.downWords[index] == true
+                    ? styles.itemgreen
+                    : styles.item
+                }
+              ></View>
+            );
+          })}
+        </View>
       </View>
     </View>
   );
@@ -55,18 +61,37 @@ const styles = StyleSheet.create({
   counter: {
     flexDirection: "column",
   },
+  items: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
   item: {
+    borderColor: "#333333",
+    borderWidth: 2,
+    width: 20,
+    height: 20,
+    backgroundColor: "white",
+    margin: 1,
     flexDirection: "row",
   },
-  whitetext: {
-    color: "white",
+  itemgreen: {
+    borderColor: "#333333",
+    borderWidth: 2,
+    width: 20,
+    height: 20,
+    backgroundColor: "green",
+    margin: 1,
+    flexDirection: "row",
+  },
+  blacktext: {
+    color: "black",
     fontSize: 16,
     fontWeight: 700,
   },
   greentext: {
     paddingLeft: 20,
     color: "green",
-    fontSize: 16,
+    fontSize: 8,
     fontWeight: 900,
   },
   flatList: {

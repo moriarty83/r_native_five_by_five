@@ -2,28 +2,72 @@ import React, { useReducer } from "react";
 import Rando from "js-rando";
 import dictionary from "./dictionary";
 
-const rando = new Rando();
-
+// const rando = new Rando();
+var rando = require("random-seed").create(seed);
+const today = new Date();
+const options = {
+  timeZone: "America/New_York",
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+};
+const seed = today.toLocaleDateString("en-US", options);
+console.log("seed: ", seed);
 const dict = dictionary;
 
-class letter {}
+letter_values = {
+  E: 1,
+  A: 1,
+  S: 1,
+  O: 1,
+  T: 1,
+
+  I: 2,
+  R: 2,
+  N: 2,
+  L: 2,
+  D: 2,
+
+  U: 3,
+  P: 3,
+  M: 3,
+  C: 3,
+  G: 3,
+
+  Y: 4,
+  B: 4,
+  H: 4,
+  K: 4,
+  W: 4,
+
+  F: 5,
+  V: 5,
+  Z: 5,
+  X: 5,
+  Q: 5,
+  J: 5,
+};
 
 /////////////////////////
 // INITIAL STATE
 /////////////////////////
 const initialFixed = genrateFixed();
 const initialChars = generateChars();
-
+const selectStates = ["across", "down", "disabled"];
 const initialState = {
   activeSpace: 0,
   activeRow: 0,
   activeCol: 0,
   selectAcross: true,
+  select: selectStates[0],
   fixedChars: initialFixed,
   chars: generateChars(),
   acrossWords: new Array(5).fill(false),
   downWords: new Array(5).fill(false),
-  scores: new Array(25).fill(0),
+  scoredChars: new Array(5).fill(0),
+  totalScore: 0,
+  gameOver: false,
 };
 
 /////////////////////////
@@ -36,11 +80,21 @@ const reducer = (state, action) => {
   switch (action.type) {
     /////////// SELECT SPACE ///////////
     case "selectSpace":
-      payload =
-        action.payload.activeSpace == state.activeSpace
-          ? { selectAcross: !state.selectAcross }
-          : action.payload;
+      console.log(action.payload.activeSpace);
+      select = state.select;
+      payload = action.payload;
+      if (state.gameOver == true) {
+        payload["select"] =
+          selectStates[(selectStates.indexOf(state.select) + 1) % 3];
+      } else {
+        if (action.payload.activeSpace == state.activeSpace) {
+          payload["select"] =
+            selectStates[(selectStates.indexOf(state.select) + 1) % 2];
+        }
+      }
+
       newState = { ...state, ...payload };
+      console.log(newState.activeSpace);
       return newState;
 
     /////////// ENTER LETTER ///////////
@@ -76,8 +130,8 @@ const reducer = (state, action) => {
 
     /////////// SCORE GAME ///////////
     case "scoreGame":
-      scores = scoreGame();
-      newState = { ...state, scores };
+      totalScore = scoreGame(state);
+      newState = { ...state, ...totalScore };
       return newState;
 
     default:
@@ -122,9 +176,7 @@ export const useAppState = () => {
 function genrateFixed() {
   fixed = {};
   while (Object.keys(fixed).length < 3) {
-    fixed[rando.RandomInt(0, 25)] = String.fromCharCode(
-      rando.RandomInt(65, 91)
-    );
+    fixed[rando(0, 25)] = String.fromCharCode(rando(65, 91));
   }
   return fixed;
 }
@@ -143,7 +195,7 @@ function generateChars() {
 
 function getNextSpace(state, advance = 1) {
   let nextSpace = {};
-  if (state.selectAcross) {
+  if (state.select == "across") {
     nextSpace["activeCol"] = (state.activeSpace + advance).mod(5);
     nextSpace["activeSpace"] = state.activeRow * 5 + nextSpace["activeCol"];
   } else {
@@ -187,28 +239,43 @@ function checkWords(state, chars) {
 }
 
 function scoreGame(state) {
-  let scores = new Array(25);
+  let totalScore = 0;
+  let scoredChars = state.scoredChars;
   for (let i = 0; i < 25; i++) {
     let score = 0;
-    if (state.chars[i].across == true) {
-      score += 5;
+    if (state.chars[i].across == true || state.chars[i].down == true) {
+      if (state.chars[i].across == true) {
+        score += 5;
+        console.log("Across score");
+      }
+      if (state.chars[i].down == true) {
+        score += 5;
+        console.log("Down score");
+      }
+      if (state.chars[i].fixed == true) {
+        score += 5;
+        console.log("Fixed score");
+      }
+      if (
+        state.chars[i].down == true &&
+        state.chars[i].across == true &&
+        state.chars[i].fixed == true
+      ) {
+        console.log("double fixed score");
+
+        score += 5;
+      }
+      score += letter_values[state.chars[i].char];
     }
-    if (state.chars[i].down == true) {
-      score += 5;
-    }
-    if (state.chars[i].fixed == true) {
-      score += 5;
-    }
-    if (
-      state.chars[i].down == true &&
-      state.chars[i].across == true &&
-      state.chars[i].fixed == true
-    ) {
-      score += 5;
-    }
-    scores[i] = score;
+    scoredChars[i] = score;
+    totalScore += score;
   }
-  return scores;
+  return {
+    totalScore: totalScore,
+    gameOver: true,
+    scoredChars: scoredChars,
+    select: selectStates[2],
+  };
 }
 
 // New method to correct for negative modulo

@@ -5,7 +5,7 @@ import { useAppState } from "../AppState";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const squareSize =
-  windowWidth < windowHeight ? windowWidth / 5 - 5 : windowHeight / 5 - 5;
+  windowWidth < windowHeight ? windowWidth / 5 - 1 : windowHeight / 5 - 5;
 
 const Space = (props) => {
   const { state, dispatch } = useAppState();
@@ -24,41 +24,65 @@ const Space = (props) => {
 
   const selectStyle = () => {
     let selectedStyles = [];
-
     const char = state.chars[props.index];
-
-    if (state.activeSpace == props.index) {
+    if (state.gameOver == false) {
+    }
+    if (state.activeSpace == props.index && state.select != "disabled") {
       selectedStyles = [styles.letter, styles.activeLetter];
     } else if (
-      (state.selectAcross && props.row == state.activeRow) ||
-      (!state.selectAcross && props.col == state.activeCol)
+      (state.select == "across" && props.row == state.activeRow) ||
+      (state.select == "down" && props.col == state.activeCol)
     ) {
       selectedStyles = [styles.letter, styles.activeWord];
     } else {
       selectedStyles = [styles.letter, styles.inactiveLetter];
     }
 
-    if (
-      (char.across == true && char.down == true && char.fixed == false) ||
-      (char.across == false && char.down == true && char.fixed == true) ||
-      (char.across == true && char.down == false && char.fixed == true)
-    ) {
-      selectedStyles.push(styles.twoWords);
-    } else if (
-      (char.across == true && char.down == false && char.fixed == false) ||
-      (char.across == false && char.down == true && char.fixed == false)
-    ) {
-      selectedStyles.push(styles.oneWord);
-    } else if (char.across == true && char.down == true && char.fixed == true) {
-      selectedStyles.push(styles.twoWordsFixed);
+    if (state.gameOver == true) {
+      if (
+        (char.across == true && char.down == true && char.fixed == false) ||
+        (char.across == false && char.down == true && char.fixed == true) ||
+        (char.across == true && char.down == false && char.fixed == true)
+      ) {
+        selectedStyles.push(styles.twoWords);
+      } else if (
+        (char.across == true && char.down == false && char.fixed == false) ||
+        (char.across == false && char.down == true && char.fixed == false)
+      ) {
+        selectedStyles.push(styles.oneWord);
+      } else if (
+        char.across == true &&
+        char.down == true &&
+        char.fixed == true
+      ) {
+        selectedStyles.push(styles.twoWordsFixed);
+      }
     }
     if (state.fixedChars[props.index.toString()]) {
       selectedStyles.push(styles.fixedLetter);
+    }
+    if (props.index % 5 == 0) {
+      selectedStyles.push(styles.noLeftMargin);
+    }
+    if (props.index % 5 == 4) {
+      selectedStyles.push(styles.noRightMargin);
     }
     return selectedStyles;
   };
 
   const getChar = () => {
+    if (state.gameOver) {
+      if (
+        state.activeSpace == props.index ||
+        (state.select == "across" && props.row == state.activeRow) ||
+        (state.select == "down" && props.col == state.activeCol)
+      ) {
+        return state.chars[props.index].char != null &&
+          state.select != "disabled"
+          ? state.scoredChars[props.index]
+          : state.chars[props.index].char;
+      }
+    }
     return state.chars[props.index].char;
   };
 
@@ -87,7 +111,8 @@ const styles = StyleSheet.create({
   letter: {
     width: squareSize,
     height: squareSize,
-    margin: 2,
+    borderColor: "#333333",
+    borderWidth: 1,
     textAlign: "center",
     alignItems: "center",
     fontSize: 48,
@@ -126,21 +151,13 @@ const styles = StyleSheet.create({
     left: 7,
   },
 
-  hidden: {
-    margin: 2,
-    width: 20,
-    height: 20,
-    backgroundColor: "#333333",
-    color: "#333333",
-  },
-
   activeLetter: {
-    borderColor: "#000000",
-    borderWidth: 5,
+    borderColor: "#e0b14a",
+    borderWidth: 4,
   },
   activeWord: {
     borderColor: "#818181",
-    borderWidth: 5,
+    borderWidth: 4,
   },
   inactiveLetter: {
     backgroundColor: "#fff",
@@ -156,6 +173,12 @@ const styles = StyleSheet.create({
   },
   twoWordsFixed: {
     backgroundColor: "#e0b14a",
+  },
+  noLeftMargin: {
+    borderLeftColor: "white",
+  },
+  noRightMargin: {
+    borderRightColor: "white",
   },
 });
 

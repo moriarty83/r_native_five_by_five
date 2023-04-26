@@ -8,7 +8,6 @@ import {
   Dimensions,
 } from "react-native";
 import Char from "./Char";
-import { InputContext } from "./InputContext";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -35,12 +34,6 @@ const Keyboard = (props) => {
   };
 
   const renderChar = ({ item }) => <Char index={item} char={item} />;
-
-  let renderStyles = props.isActiveLetter
-    ? [styles.letter, styles.activeLetter]
-    : props.isActiveWord
-    ? [styles.letter, styles.activeWord]
-    : [styles.letter, styles.inactiveLetter];
 
   return (
     <View style={styles.keyboard}>
@@ -73,7 +66,9 @@ const Keyboard = (props) => {
 };
 
 const styles = StyleSheet.create({
-  keyboard: {},
+  keyboard: {
+    backgroundColor: "white",
+  },
   keyrow: {
     flex: 1,
     width: windowWidth,
