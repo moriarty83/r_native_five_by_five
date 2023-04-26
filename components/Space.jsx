@@ -23,8 +23,10 @@ const Space = (props) => {
   };
 
   const selectStyle = () => {
-    const char = state.chars[props.index];
     let selectedStyles = [];
+
+    const char = state.chars[props.index];
+
     if (state.activeSpace == props.index) {
       selectedStyles = [styles.letter, styles.activeLetter];
     } else if (
@@ -68,6 +70,15 @@ const Space = (props) => {
       >
         {getChar()}
       </Text>
+      <Text style={styles.label}>
+        {props.col == 0 && props.row == 0
+          ? 1
+          : props.row == 0
+          ? props.col + 1
+          : props.col == 0
+          ? props.row + 1
+          : ""}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -83,12 +94,52 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     backgroundColor: "#fff",
   },
+  checkRow: {
+    width: 20,
+    height: squareSize,
+    margin: 2,
+    textAlign: "center",
+    alignItems: "center",
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333333",
+    lineHeight: squareSize,
+  },
+  checkCol: {
+    width: squareSize,
+    height: 30,
+    margin: 2,
+    textAlign: "center",
+    alignItems: "center",
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333333",
+    backgroundColor: "#333333",
+  },
+  showCheck: {
+    color: "green",
+  },
+  label: {
+    fontSize: 12,
+    position: "absolute",
+    top: 7,
+    left: 7,
+  },
+
+  hidden: {
+    margin: 2,
+    width: 20,
+    height: 20,
+    backgroundColor: "#333333",
+    color: "#333333",
+  },
+
   activeLetter: {
-    borderColor: "#ffc229",
+    borderColor: "#000000",
     borderWidth: 5,
   },
   activeWord: {
-    borderColor: "#fddc88",
+    borderColor: "#818181",
     borderWidth: 5,
   },
   inactiveLetter: {

@@ -21,6 +21,9 @@ const initialState = {
   selectAcross: true,
   fixedChars: initialFixed,
   chars: generateChars(),
+  acrossWords: new Array(5).fill(false),
+  downWords: new Array(5).fill(false),
+  scores: new Array(25).fill(0),
 };
 
 /////////////////////////
@@ -64,11 +67,17 @@ const reducer = (state, action) => {
         action.payload == "\u232B" ? null : action.payload;
 
       // make new state
-      chars = checkWords(state, chars);
-      newState = { ...state, chars, ...nextSpace };
+      checkedWords = checkWords(state, chars);
+      newState = { ...state, ...checkWords, ...nextSpace };
       return newState;
     case "toggleDirection":
       newState = { ...state, myIngredients: action.payload };
+      return newState;
+
+    /////////// SCORE GAME ///////////
+    case "scoreGame":
+      scores = scoreGame();
+      newState = { ...state, scores };
       return newState;
 
     default:
@@ -147,6 +156,8 @@ function getNextSpace(state, advance = 1) {
 function checkWords(state, chars) {
   let validAcross = false;
   let validDown = false;
+  let acrossWords = state.acrossWords;
+  let downWords = state.downWords;
 
   let acrossIndex = [];
   let downIndex = [];
@@ -170,8 +181,34 @@ function checkWords(state, chars) {
     chars[downIndex[i]]["down"] = validDown;
     chars[acrossIndex[i]]["across"] = validAcross;
   }
-  console.log(chars);
-  return chars;
+  downWords[state.activeCol] = validDown;
+  acrossWords[state.activeRow] = validAcross;
+  return { chars: chars, downWords: downWords, acrossWords: acrossWords };
+}
+
+function scoreGame(state) {
+  let scores = new Array(25);
+  for (let i = 0; i < 25; i++) {
+    let score = 0;
+    if (state.chars[i].across == true) {
+      score += 5;
+    }
+    if (state.chars[i].down == true) {
+      score += 5;
+    }
+    if (state.chars[i].fixed == true) {
+      score += 5;
+    }
+    if (
+      state.chars[i].down == true &&
+      state.chars[i].across == true &&
+      state.chars[i].fixed == true
+    ) {
+      score += 5;
+    }
+    scores[i] = score;
+  }
+  return scores;
 }
 
 // New method to correct for negative modulo

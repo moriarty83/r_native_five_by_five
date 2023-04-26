@@ -73,17 +73,13 @@ const Keyboard = (props) => {
 };
 
 const styles = StyleSheet.create({
-  keyboard: {
-    flex: 1,
-    justifyContent: "flex-start",
-    flexGrow: 0,
-  },
+  keyboard: {},
   keyrow: {
     flex: 1,
     width: windowWidth,
     justifyContent: "center",
     alignItems: "center",
-    heigth: 0,
+    height: 0,
     flexGrow: 0,
   },
 });

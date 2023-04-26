@@ -19,8 +19,6 @@ const onlyLettersAndNumbers = (str) => {
 };
 
 const Char = (props) => {
-  const { Input, setInput } = useContext(InputContext);
-
   const { state, dispatch } = useAppState();
 
   const handleCharClick = () => {
