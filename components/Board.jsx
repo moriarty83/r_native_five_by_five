@@ -11,6 +11,7 @@ import { useAppState } from "../AppState";
 import Space from "./Space";
 import Keyboard from "./Keyboard";
 import WordCounter from "./WordCounter";
+import ShareScore from "./ShareScore";
 
 const GenerateLetters = () => {
   let letters = [];
@@ -82,6 +83,7 @@ const Board = ({ navigation }) => {
             Final Score: <Text style={styles.gold}>{state.totalScore}</Text>
           </Text>
           <Text>Click a word for score details.</Text>
+          <ShareScore />
         </>
       )}
     </View>

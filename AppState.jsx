@@ -3,17 +3,12 @@ import Rando from "js-rando";
 import dictionary from "./dictionary";
 
 // const rando = new Rando();
-var rando = require("random-seed").create(seed);
-const today = new Date();
-const options = {
-  timeZone: "America/New_York",
-  weekday: "long",
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-};
-const seed = today.toLocaleDateString("en-US", options);
-console.log("seed: ", seed);
+import { XORShift } from "random-seedable";
+
+const today = new Date().toLocaleDateString().slice(0, 11);
+
+console.log("today: ", today);
+const rando = new XORShift(today.split("/").join(""));
 const dict = dictionary;
 
 letter_values = {
@@ -53,9 +48,9 @@ letter_values = {
 // INITIAL STATE
 /////////////////////////
 const initialFixed = genrateFixed();
-const initialChars = generateChars();
 const selectStates = ["across", "down", "disabled"];
 const initialState = {
+  today: today,
   activeSpace: 0,
   activeRow: 0,
   activeCol: 0,
@@ -83,7 +78,10 @@ const reducer = (state, action) => {
       console.log(action.payload.activeSpace);
       select = state.select;
       payload = action.payload;
-      if (state.gameOver == true) {
+      if (
+        state.gameOver == true &&
+        action.payload.activeSpace == state.activeSpace
+      ) {
         payload["select"] =
           selectStates[(selectStates.indexOf(state.select) + 1) % 3];
       } else {
@@ -176,7 +174,9 @@ export const useAppState = () => {
 function genrateFixed() {
   fixed = {};
   while (Object.keys(fixed).length < 3) {
-    fixed[rando(0, 25)] = String.fromCharCode(rando(65, 91));
+    fixed[rando.randRange(0, 24)] = String.fromCharCode(
+      rando.randRange(65, 90)
+    );
   }
   return fixed;
 }
