@@ -92,16 +92,10 @@ const Board = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 16,
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    width: "100%",
     backgroundColor: "white",
-    height: "50%",
   },
   flatList: {
-    flexGrow: 0,
+    backgroundColor: "green",
   },
   button: {
     marginTop: 8,

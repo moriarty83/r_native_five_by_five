@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     width: charWidth * 1.5,
   },
   container: {
-    flex: 1,
     flexDirection: "row",
   },
 });

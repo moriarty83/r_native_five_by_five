@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   keyrow: {
-    flex: 1,
     width: windowWidth,
     justifyContent: "center",
     alignItems: "center",

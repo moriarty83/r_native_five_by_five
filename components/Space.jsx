@@ -111,6 +111,8 @@ const styles = StyleSheet.create({
   letter: {
     width: squareSize,
     height: squareSize,
+    maxWidth: 100,
+    maxHeight: squareSize,
     borderColor: "#333333",
     borderWidth: 1,
     textAlign: "center",
@@ -119,31 +121,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     backgroundColor: "#fff",
   },
-  checkRow: {
-    width: 20,
-    height: squareSize,
-    margin: 2,
-    textAlign: "center",
-    alignItems: "center",
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#333333",
-    lineHeight: squareSize,
-  },
-  checkCol: {
-    width: squareSize,
-    height: 30,
-    margin: 2,
-    textAlign: "center",
-    alignItems: "center",
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#333333",
-    backgroundColor: "#333333",
-  },
-  showCheck: {
-    color: "green",
-  },
+
   label: {
     fontSize: 12,
     position: "absolute",
