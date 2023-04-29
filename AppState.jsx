@@ -102,7 +102,13 @@ const reducer = (state, action) => {
         return { ...state, ...getNextSpace(state) };
       }
       // Check to see if we hit delete
-      const advance = action.payload != "\u232B" ? 1 : -1;
+      const advance =
+        action.payload != "\u232B"
+          ? 1
+          : state.chars[state.activeSpace].char != null &&
+            state.chars[state.activeSpace].fixed == false
+          ? 0
+          : -1;
       // get nextSpace object based on whether or not we hit delete.
       const nextSpace = getNextSpace(state, advance);
 
@@ -193,8 +199,19 @@ function generateChars() {
   return chars;
 }
 
-function getNextSpace(state, advance = 1) {
-  let nextSpace = {};
+function getNextSpace(
+  state,
+  advance = 1,
+  nextSpace = {
+    activeSpace: state.activeSpace,
+    activeCol: state.activeCol,
+    activeRow: state.activeRow,
+  }
+) {
+  newAdvance = advance;
+  console.log("getNextSpave");
+  console.log(newAdvance);
+
   if (state.select == "across") {
     nextSpace["activeCol"] = (state.activeSpace + advance).mod(5);
     nextSpace["activeSpace"] = state.activeRow * 5 + nextSpace["activeCol"];
@@ -202,7 +219,14 @@ function getNextSpace(state, advance = 1) {
     nextSpace["activeRow"] = (state.activeRow + advance).mod(5);
     nextSpace["activeSpace"] = nextSpace.activeRow * 5 + state["activeCol"];
   }
-  return nextSpace;
+  if (state.chars[nextSpace.activeSpace].fixed == true) {
+    state.activeRow = nextSpace.activeRow;
+    state.activeCol = nextSpace.activeCol;
+    state.activeSpace = nextSpace.activeSpace;
+    return getNextSpace(state, newAdvance, nextSpace);
+  } else {
+    return nextSpace;
+  }
 }
 
 function checkWords(state, chars) {

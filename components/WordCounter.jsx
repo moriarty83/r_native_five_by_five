@@ -8,6 +8,7 @@ const counterWidth = windowWidth < 500 ? windowWidth : 500;
 const WordCounter = (props) => {
   //////////// STATE //////////////
   const { state, dispatch } = useAppState();
+  const itemStyle = windowWidth < 500 ? styles.itemMobile : styles.itemMablet;
 
   //////////// METHODS //////////
   ///////////// RENDER ////////////
@@ -21,11 +22,12 @@ const WordCounter = (props) => {
             return (
               <View
                 key={`${index}across`}
-                style={
+                style={[
                   state.acrossWords[index] == true
                     ? styles.itemgreen
-                    : styles.item
-                }
+                    : styles.item,
+                  itemStyle,
+                ]}
               ></View>
             );
           })}
@@ -39,11 +41,12 @@ const WordCounter = (props) => {
             return (
               <View
                 key={`${index}down`}
-                style={
-                  state.downWords[index] == true
+                style={[
+                  state.acrossWords[index] == true
                     ? styles.itemgreen
-                    : styles.item
-                }
+                    : styles.item,
+                  itemStyle,
+                ]}
               ></View>
             );
           })}
@@ -56,9 +59,11 @@ const WordCounter = (props) => {
 const styles = StyleSheet.create({
   counterparent: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     color: "white",
-    paddingVertical: 24,
+    paddingHorizontal: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
     width: counterWidth,
   },
   counter: {
@@ -71,24 +76,30 @@ const styles = StyleSheet.create({
   item: {
     borderColor: "#333333",
     borderWidth: 2,
-    width: 20,
-    height: 20,
     backgroundColor: "white",
     margin: 1,
     flexDirection: "row",
   },
+  itemMobile: {
+    width: 20,
+    height: 20,
+  },
+  itemTablet: {
+    width: 40,
+    height: 40,
+  },
   itemgreen: {
     borderColor: "#333333",
     borderWidth: 2,
-    width: 20,
-    height: 20,
+    width: 40,
+    height: 40,
     backgroundColor: "green",
     margin: 1,
     flexDirection: "row",
   },
   blacktext: {
     color: "black",
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 700,
   },
   greentext: {

@@ -65,13 +65,14 @@ const Board = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.section}>
+        <WordCounter style={styles.counter} />
+
         <FlatList
           style={styles.flatList}
           data={GenerateLetters()}
           renderItem={renderSpace}
           numColumns={5}
         />
-        <WordCounter style={styles.counter} />
       </View>
       <View style={styles.section}>
         {state.gameOver == false ? <Keyboard /> : null}
@@ -96,7 +97,6 @@ const Board = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 16,
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
