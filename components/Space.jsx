@@ -4,8 +4,7 @@ import { useAppState } from "../AppState";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const squareSize =
-  windowWidth < windowHeight ? windowWidth / 5 - 1 : windowHeight / 5 - 5;
+const squareSize = windowWidth < 500 ? windowWidth / 5 - 1 : 100;
 
 const Space = (props) => {
   const { state, dispatch } = useAppState();
@@ -111,8 +110,6 @@ const styles = StyleSheet.create({
   letter: {
     width: squareSize,
     height: squareSize,
-    maxWidth: 100,
-    maxHeight: squareSize,
     borderColor: "#333333",
     borderWidth: 1,
     textAlign: "center",
@@ -121,7 +118,31 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     backgroundColor: "#fff",
   },
-
+  checkRow: {
+    width: 20,
+    height: squareSize,
+    margin: 2,
+    textAlign: "center",
+    alignItems: "center",
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333333",
+    lineHeight: squareSize,
+  },
+  checkCol: {
+    width: squareSize,
+    height: 30,
+    margin: 2,
+    textAlign: "center",
+    alignItems: "center",
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333333",
+    backgroundColor: "#333333",
+  },
+  showCheck: {
+    color: "green",
+  },
   label: {
     fontSize: 12,
     position: "absolute",

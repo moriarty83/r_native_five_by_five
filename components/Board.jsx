@@ -64,38 +64,54 @@ const Board = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        style={styles.flatList}
-        data={GenerateLetters()}
-        renderItem={renderSpace}
-        numColumns={5}
-      />
-      {state.gameOver == false ? <Keyboard /> : null}
-      <WordCounter />
+      <View style={styles.section}>
+        <FlatList
+          style={styles.flatList}
+          data={GenerateLetters()}
+          renderItem={renderSpace}
+          numColumns={5}
+        />
+        <WordCounter style={styles.counter} />
+      </View>
+      <View style={styles.section}>
+        {state.gameOver == false ? <Keyboard /> : null}
 
-      {state.gameOver == false ? (
-        <Pressable style={styles.button} onPress={clickFinish}>
-          <Text style={styles.btnText}>Finsihed</Text>
-        </Pressable>
-      ) : (
-        <>
-          <Text style={styles.score}>
-            Final Score: <Text style={styles.gold}>{state.totalScore}</Text>
-          </Text>
-          <Text>Click a word for score details.</Text>
-          <ShareScore />
-        </>
-      )}
+        {state.gameOver == false ? (
+          <Pressable style={styles.button} onPress={clickFinish}>
+            <Text style={styles.btnText}>Finsihed</Text>
+          </Pressable>
+        ) : (
+          <>
+            <Text style={styles.score}>
+              Final Score: <Text style={styles.gold}>{state.totalScore}</Text>
+            </Text>
+            <Text>Click a word for score details.</Text>
+            <ShareScore />
+          </>
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 16,
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
     backgroundColor: "white",
   },
   flatList: {
-    backgroundColor: "green",
+    flexGrow: 0,
+  },
+  section: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 24,
   },
   button: {
     marginTop: 8,

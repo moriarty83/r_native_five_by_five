@@ -2,6 +2,9 @@ import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View, FlatList, Dimensions } from "react-native";
 import { useAppState } from "../AppState";
 
+const windowWidth = Dimensions.get("window").width;
+const counterWidth = windowWidth < 500 ? windowWidth : 500;
+
 const WordCounter = (props) => {
   //////////// STATE //////////////
   const { state, dispatch } = useAppState();
@@ -54,9 +57,9 @@ const styles = StyleSheet.create({
   counterparent: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: "100%",
-    padding: 10,
     color: "white",
+    paddingVertical: 24,
+    width: counterWidth,
   },
   counter: {
     flexDirection: "column",
