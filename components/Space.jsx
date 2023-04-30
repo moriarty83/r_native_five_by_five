@@ -37,26 +37,21 @@ const Space = (props) => {
       selectedStyles = [styles.letter, styles.inactiveLetter];
     }
 
-    if (state.gameOver == true) {
-      if (
-        (char.across == true && char.down == true && char.fixed == false) ||
-        (char.across == false && char.down == true && char.fixed == true) ||
-        (char.across == true && char.down == false && char.fixed == true)
-      ) {
-        selectedStyles.push(styles.twoWords);
-      } else if (
-        (char.across == true && char.down == false && char.fixed == false) ||
-        (char.across == false && char.down == true && char.fixed == false)
-      ) {
-        selectedStyles.push(styles.oneWord);
-      } else if (
-        char.across == true &&
-        char.down == true &&
-        char.fixed == true
-      ) {
-        selectedStyles.push(styles.twoWordsFixed);
-      }
+    if (
+      (char.across == true && char.down == true && char.fixed == false) ||
+      (char.across == false && char.down == true && char.fixed == true) ||
+      (char.across == true && char.down == false && char.fixed == true)
+    ) {
+      selectedStyles.push(styles.twoWords);
+    } else if (
+      (char.across == true && char.down == false && char.fixed == false) ||
+      (char.across == false && char.down == true && char.fixed == false)
+    ) {
+      selectedStyles.push(styles.oneWord);
+    } else if (char.across == true && char.down == true && char.fixed == true) {
+      selectedStyles.push(styles.twoWordsFixed);
     }
+
     if (state.fixedChars[props.index.toString()]) {
       selectedStyles.push(styles.fixedLetter);
     }

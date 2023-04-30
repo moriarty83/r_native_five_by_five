@@ -97,7 +97,8 @@ const reducer = (state, action) => {
 
     /////////// ENTER LETTER ///////////
     case "enterLetter":
-      // if 'tab', just advance the space.
+      console.log("active spave 100: ", state.activeSpace);
+      const spaceToFill = state.activeSpace;
       if (action.payload == "\u21E5") {
         return { ...state, ...getNextSpace(state) };
       }
@@ -111,9 +112,11 @@ const reducer = (state, action) => {
           : -1;
       // get nextSpace object based on whether or not we hit delete.
       const nextSpace = getNextSpace(state, advance);
+      console.log("space to fill115: ", spaceToFill);
 
       // If letter is fixed, just advance space, do nothing else.
-      if (state.chars[state.activeSpace].fixed) {
+      if (state.chars[spaceToFill].fixed) {
+        console.log("renturning 117");
         return { ...state, ...nextSpace };
       }
 
@@ -121,7 +124,7 @@ const reducer = (state, action) => {
       let chars = [...state.chars];
 
       // Update temporary chars with action payload
-      chars[state.activeSpace].char =
+      chars[spaceToFill].char =
         action.payload == "\u232B" ? null : action.payload;
 
       // make new state
@@ -129,7 +132,7 @@ const reducer = (state, action) => {
       newState = { ...state, ...checkWords, ...nextSpace };
       return newState;
     case "toggleDirection":
-      newState = { ...state, myIngredients: action.payload };
+      newState = { ...state };
       return newState;
 
     /////////// SCORE GAME ///////////
