@@ -7,7 +7,6 @@ import { XORShift } from "random-seedable";
 
 const today = new Date().toLocaleDateString().slice(0, 11);
 
-console.log("today: ", today);
 const rando = new XORShift(today.split("/").join(""));
 const dict = dictionary;
 
@@ -75,7 +74,6 @@ const reducer = (state, action) => {
   switch (action.type) {
     /////////// SELECT SPACE ///////////
     case "selectSpace":
-      console.log(action.payload.activeSpace);
       select = state.select;
       payload = action.payload;
       if (
@@ -92,12 +90,10 @@ const reducer = (state, action) => {
       }
 
       newState = { ...state, ...payload };
-      console.log(newState.activeSpace);
       return newState;
 
     /////////// ENTER LETTER ///////////
     case "enterLetter":
-      console.log("active spave 100: ", state.activeSpace);
       const spaceToFill = state.activeSpace;
       if (action.payload == "\u21E5") {
         return { ...state, ...getNextSpace(state) };
@@ -111,13 +107,10 @@ const reducer = (state, action) => {
           ? 0
           : -1;
       // get nextSpace object based on whether or not we hit delete.
-      const nextSpace = getNextSpace(state, advance);
-      console.log("space to fill115: ", spaceToFill);
 
       // If letter is fixed, just advance space, do nothing else.
       if (state.chars[spaceToFill].fixed) {
-        console.log("renturning 117");
-        return { ...state, ...nextSpace };
+        return { ...state, ...getNextSpace(state, advance) };
       }
 
       // Make temporary chars
@@ -129,7 +122,7 @@ const reducer = (state, action) => {
 
       // make new state
       checkedWords = checkWords(state, chars);
-      newState = { ...state, ...checkWords, ...nextSpace };
+      newState = { ...state, ...checkWords, ...getNextSpace(state, advance) };
       return newState;
     case "toggleDirection":
       newState = { ...state };
@@ -211,28 +204,28 @@ function getNextSpace(
     activeRow: state.activeRow,
   }
 ) {
+  let thisState = state;
   newAdvance = advance;
-  console.log("getNextSpave");
-  console.log(newAdvance);
 
-  if (state.select == "across") {
-    nextSpace["activeCol"] = (state.activeSpace + advance).mod(5);
-    nextSpace["activeSpace"] = state.activeRow * 5 + nextSpace["activeCol"];
+  if (thisState.select == "across") {
+    nextSpace["activeCol"] = (thisState.activeSpace + advance).mod(5);
+    nextSpace["activeSpace"] = thisState.activeRow * 5 + nextSpace["activeCol"];
   } else {
-    nextSpace["activeRow"] = (state.activeRow + advance).mod(5);
-    nextSpace["activeSpace"] = nextSpace.activeRow * 5 + state["activeCol"];
+    nextSpace["activeRow"] = (thisState.activeRow + advance).mod(5);
+    nextSpace["activeSpace"] = nextSpace.activeRow * 5 + thisState["activeCol"];
   }
-  if (state.chars[nextSpace.activeSpace].fixed == true) {
-    state.activeRow = nextSpace.activeRow;
-    state.activeCol = nextSpace.activeCol;
-    state.activeSpace = nextSpace.activeSpace;
-    return getNextSpace(state, newAdvance, nextSpace);
+  if (thisState.chars[nextSpace.activeSpace].fixed == true) {
+    thisState.activeRow = nextSpace.activeRow;
+    thisState.activeCol = nextSpace.activeCol;
+    thisState.activeSpace = nextSpace.activeSpace;
+    return getNextSpace(thisState, newAdvance, nextSpace);
   } else {
     return nextSpace;
   }
 }
 
 function checkWords(state, chars) {
+  // TODO: If down ins selected, and space 23 (second to last), is filled to complete across word, it doesn't color.
   let validAcross = false;
   let validDown = false;
   let acrossWords = state.acrossWords;
@@ -247,6 +240,7 @@ function checkWords(state, chars) {
   for (let i = 0; i < 5; i++) {
     acrossIndex.push(state.activeRow * 5 + i);
     downIndex.push(i * 5 + state.activeCol);
+
     across =
       chars[acrossIndex[i]].char != null
         ? across + chars[acrossIndex[i]].char
@@ -273,23 +267,18 @@ function scoreGame(state) {
     if (state.chars[i].across == true || state.chars[i].down == true) {
       if (state.chars[i].across == true) {
         score += 5;
-        console.log("Across score");
       }
       if (state.chars[i].down == true) {
         score += 5;
-        console.log("Down score");
       }
       if (state.chars[i].fixed == true) {
         score += 5;
-        console.log("Fixed score");
       }
       if (
         state.chars[i].down == true &&
         state.chars[i].across == true &&
         state.chars[i].fixed == true
       ) {
-        console.log("double fixed score");
-
         score += 5;
       }
       score += letter_values[state.chars[i].char];
