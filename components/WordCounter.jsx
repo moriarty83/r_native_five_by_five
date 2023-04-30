@@ -42,7 +42,7 @@ const WordCounter = (props) => {
               <View
                 key={`${index}down`}
                 style={[
-                  state.acrossWords[index] == true
+                  state.downWords[index] == true
                     ? styles.itemgreen
                     : styles.item,
                   itemStyle,

@@ -60,6 +60,7 @@ const initialState = {
   acrossWords: new Array(5).fill(false),
   downWords: new Array(5).fill(false),
   scoredChars: new Array(5).fill(0),
+  showScores: false,
   totalScore: 0,
   gameOver: false,
 };
@@ -76,12 +77,9 @@ const reducer = (state, action) => {
     case "selectSpace":
       select = state.select;
       payload = action.payload;
-      if (
-        state.gameOver == true &&
-        action.payload.activeSpace == state.activeSpace
-      ) {
-        payload["select"] =
-          selectStates[(selectStates.indexOf(state.select) + 1) % 3];
+      if (state.gameOver == true) {
+        let showScores = !state.showScores;
+        return { ...state, showScores };
       } else {
         if (action.payload.activeSpace == state.activeSpace) {
           payload["select"] =
@@ -261,8 +259,12 @@ function checkWords(state, chars) {
 
 function scoreGame(state) {
   let totalScore = 0;
+  let bonus = 100;
   let scoredChars = state.scoredChars;
   for (let i = 0; i < 25; i++) {
+    if (!state.chars[i].down == true || !state.chars[i].across == true) {
+      bonus = 0;
+    }
     let score = 0;
     if (state.chars[i].across == true || state.chars[i].down == true) {
       if (state.chars[i].across == true) {
@@ -286,6 +288,7 @@ function scoreGame(state) {
     scoredChars[i] = score;
     totalScore += score;
   }
+  totalScore += bonus;
   return {
     totalScore: totalScore,
     gameOver: true,

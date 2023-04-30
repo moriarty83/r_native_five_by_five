@@ -65,19 +65,14 @@ const Space = (props) => {
   };
 
   const getChar = () => {
-    if (state.gameOver) {
-      if (
-        state.activeSpace == props.index ||
-        (state.select == "across" && props.row == state.activeRow) ||
-        (state.select == "down" && props.col == state.activeCol)
-      ) {
-        return state.chars[props.index].char != null &&
-          state.select != "disabled"
-          ? state.scoredChars[props.index]
-          : state.chars[props.index].char;
+    if (state.gameOver && state.showScores) {
+      if (!state.chars[props.index].fixed && !state.chars[props.index].char) {
+        return null;
       }
+      return state.scoredChars[props.index];
+    } else {
+      return state.chars[props.index].char;
     }
-    return state.chars[props.index].char;
   };
 
   return (
