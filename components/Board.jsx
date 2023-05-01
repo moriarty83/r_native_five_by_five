@@ -6,6 +6,7 @@ import {
   FlatList,
   Pressable,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { useAppState } from "../AppState";
 import Space from "./Space";
@@ -28,6 +29,9 @@ const GenerateLetters = () => {
 
 const Board = ({ navigation }) => {
   const { state, dispatch } = useAppState();
+  const openInstructions = () => {
+    navigation.navigate("Instructions");
+  };
   const clickFinish = () => {
     Alert.alert(
       "Are you sure?",
@@ -91,6 +95,12 @@ const Board = ({ navigation }) => {
           </>
         )}
       </View>
+      <TouchableOpacity
+        style={styles.instructions}
+        onPress={() => openInstructions()}
+      >
+        <Text style={styles.iconText}>?</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -141,6 +151,21 @@ const styles = StyleSheet.create({
   },
   gold: {
     color: "#e0b14a",
+  },
+  instructions: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderColor: "black",
+    borderWidth: 2,
+    position: "absolute",
+    right: 15,
+    bottom: 30,
+  },
+  iconText: {
+    fontSize: 20,
+    textAlign: "center",
+    textAlignVertical: "center",
   },
 });
 

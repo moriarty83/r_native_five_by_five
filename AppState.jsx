@@ -10,7 +10,7 @@ const today = new Date().toLocaleDateString().slice(0, 11);
 const rando = new XORShift(today.split("/").join(""));
 const dict = dictionary;
 
-letter_values = {
+export const letter_values = {
   E: 1,
   A: 1,
   S: 1,
