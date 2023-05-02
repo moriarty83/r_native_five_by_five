@@ -1,15 +1,11 @@
 import React, { useContext, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Pressable,
-  Alert,
-} from "react-native";
-import { useAppState, letter_values } from "../AppState";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { letter_values } from "../AppState";
 
 const Instructions = ({ navigation }) => {
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.text}>
@@ -45,34 +41,36 @@ const Instructions = ({ navigation }) => {
         {"\n"}Each letter in the alphabet is also worth points
       </Text>
       <View style={styles.lettersContainer}>
+        {/*
+         */}
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>1 Point</Text>
+          <Text style={styles.lettersHeader}>1{"\n"}Point</Text>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 1)
               return (
-                <Text style={styles.text} value={key}>
+                <Text style={styles.text} key={key}>
                   {key}
                 </Text>
               );
           })}
         </View>
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>2 Point</Text>
+          <Text style={styles.lettersHeader}>2{"\n"}Points</Text>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 2)
               return (
-                <Text style={styles.text} value={key}>
+                <Text style={styles.text} key={key}>
                   {key}
                 </Text>
               );
           })}
         </View>
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>3 Point</Text>
+          <Text style={styles.lettersHeader}>3{"\n"}Points</Text>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 3)
               return (
-                <Text style={styles.text} value={key}>
+                <Text style={styles.text} key={key}>
                   {key}
                 </Text>
               );
@@ -80,11 +78,11 @@ const Instructions = ({ navigation }) => {
         </View>
 
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>4 Point</Text>
+          <Text style={styles.lettersHeader}>4{"\n"}Points</Text>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 4)
               return (
-                <Text style={styles.text} value={key}>
+                <Text style={styles.text} key={key}>
                   {key}
                 </Text>
               );
@@ -92,17 +90,20 @@ const Instructions = ({ navigation }) => {
         </View>
 
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>5 Point</Text>
+          <Text style={styles.lettersHeader}>5{"\n"}Points</Text>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 5)
               return (
-                <Text style={styles.text} value={key}>
+                <Text style={styles.text} key={key}>
                   {key}
                 </Text>
               );
           })}
         </View>
       </View>
+      <TouchableOpacity style={styles.back} onPress={() => goBack()}>
+        <Text style={styles.iconText}>{"\u2190"}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -110,6 +111,7 @@ const Instructions = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 12,
+    height: "100%",
   },
   title: {
     fontSize: 24,
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lettersCol: {
-    flexDirection: "col",
+    flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 4,
   },
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     textDecorationLine: "underline",
+    textAlign: "center",
   },
   lettersContainer: {
     flexDirection: "row",
@@ -166,6 +169,23 @@ const styles = StyleSheet.create({
   twoWordsFixed: {
     backgroundColor: "#e0b14a",
   },
+  iconText: {
+    fontSize: 20,
+    textAlign: "center",
+    textAlignVertical: "center",
+  },
+  back: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderColor: "black",
+    borderWidth: 2,
+    position: "absolute",
+    left: 15,
+    bottom: 30,
+  },
 });
 
 export default Instructions;
+
+// 2190

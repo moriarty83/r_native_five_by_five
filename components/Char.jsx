@@ -26,7 +26,7 @@ const Char = (props) => {
   const widthStyle = onlyLettersAndNumbers(props.char)
     ? styles.standardChar
     : styles.specialChar;
-
+  console.log("props.char", props.char);
   return (
     <TouchableOpacity onPress={() => handleCharClick()}>
       <Text style={[styles.char, widthStyle]} maxLength={1}>

@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     width: windowWidth,
     justifyContent: "center",
     alignItems: "center",
-    height: 0,
     flexGrow: 0,
   },
 });
