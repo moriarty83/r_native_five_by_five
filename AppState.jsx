@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 import Rando from "js-rando";
 import dictionary from "./dictionary";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const rando = new Rando();
 import { XORShift } from "random-seedable";
@@ -73,6 +74,8 @@ const reducer = (state, action) => {
   let newState;
   console.log("reducer: ", action.type);
   switch (action.type) {
+    /////////// LOAD GAME ////////////
+    case "load":
     /////////// SELECT SPACE ///////////
     case "selectSpace":
       select = state.select;
@@ -121,6 +124,8 @@ const reducer = (state, action) => {
       // make new state
       checkedWords = checkWords(state, chars);
       newState = { ...state, ...checkWords, ...getNextSpace(state, advance) };
+      saveState(newState);
+      saveState(newState);
       return newState;
     case "toggleDirection":
       newState = { ...state };
@@ -130,6 +135,8 @@ const reducer = (state, action) => {
     case "scoreGame":
       totalScore = scoreGame(state);
       newState = { ...state, ...totalScore };
+      saveState(newState);
+
       return newState;
 
     default:
@@ -181,6 +188,16 @@ function genrateFixed() {
   return fixed;
 }
 
+async function saveState(newState) {
+  try {
+    const jsonValue = JSON.stringify(newState);
+    await AsyncStorage.setItem("state", jsonValue);
+  } catch (e) {
+    // save error
+  }
+
+  console.log("Done.");
+}
 function generateChars() {
   chars = new Array(25).fill().map(() => {
     return { char: null, across: false, down: false, fixed: false };

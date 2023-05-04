@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Text,
@@ -65,7 +66,25 @@ const Board = ({ navigation }) => {
       type={item.type}
     />
   );
+  const loadState = async () => {
+    console.log("loadstate");
 
+    const jsonValue = await AsyncStorage.getItem("state");
+    const savedState = JSON.parse(jsonValue);
+    if (jsonValue != null && savedState.today == state.today) {
+      dispatch({
+        type: "load",
+        payload: savedState,
+      });
+    }
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  };
+  useEffect(() => {
+    const getLoad = async () => {
+      await loadState();
+    };
+    console.log("returned getload: ", getLoad());
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.section}>
@@ -90,7 +109,7 @@ const Board = ({ navigation }) => {
             <Text style={styles.score}>
               Final Score: <Text style={styles.gold}>{state.totalScore}</Text>
             </Text>
-            <Text>Click a word for score details.</Text>
+            <Text>Tap board for score details.</Text>
             <ShareScore />
           </>
         )}
