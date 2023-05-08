@@ -6,7 +6,7 @@ const ShareScore = () => {
   const { state, dispatch } = useAppState();
   const getMessage = () => {
     let chars = state.chars;
-    let msg = `Five by Five\n${state.today}\nScore: ${state.totalScore}\n`;
+    let msg = `Wordnigma\n${state.today}\nScore: ${state.totalScore}\n`;
     for (let i = 0; i < 25; i++) {
       msg = msg + getSquare(chars[i]);
       if (i % 5 == 4) {

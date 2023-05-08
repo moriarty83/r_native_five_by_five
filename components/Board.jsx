@@ -8,6 +8,7 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { useAppState } from "../AppState";
 import Space from "./Space";
@@ -15,6 +16,7 @@ import Keyboard from "./Keyboard";
 import WordCounter from "./WordCounter";
 import ShareScore from "./ShareScore";
 
+import { useHeaderHeight } from "@react-navigation/elements";
 const GenerateLetters = () => {
   let letters = [];
   let index = 0;
@@ -28,8 +30,12 @@ const GenerateLetters = () => {
   return letters;
 };
 
+const windowHeight = Dimensions.get("window").height;
+
 const Board = ({ navigation }) => {
   const { state, dispatch } = useAppState();
+  const headerHeight = useHeaderHeight();
+  console.log(headerHeight);
   const openInstructions = () => {
     navigation.navigate("Instructions");
   };
@@ -67,26 +73,34 @@ const Board = ({ navigation }) => {
     />
   );
   const loadState = async () => {
-    console.log("loadstate");
-
     const jsonValue = await AsyncStorage.getItem("state");
     const savedState = JSON.parse(jsonValue);
-    if (jsonValue != null && savedState.today == state.today) {
+    console.log("state.today: ", state.today);
+    console.log("savedState.today: ", savedState.today);
+
+    if (
+      jsonValue != null &&
+      savedState.today &&
+      savedState.today == state.today
+    ) {
       dispatch({
         type: "load",
         payload: savedState,
       });
+    } else {
+      console.log("saved data is not current");
     }
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
   };
   useEffect(() => {
     const getLoad = async () => {
       await loadState();
     };
-    console.log("returned getload: ", getLoad());
+    getLoad();
   }, []);
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { height: windowHeight - useHeaderHeight() }]}
+    >
       <View style={styles.section}>
         <WordCounter style={styles.counter} />
 
@@ -129,7 +143,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    height: "100%",
     backgroundColor: "white",
   },
   flatList: {
@@ -179,7 +192,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     position: "absolute",
     right: 15,
-    bottom: 30,
+    bottom: 15,
   },
   iconText: {
     fontSize: 20,

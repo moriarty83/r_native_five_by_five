@@ -53,7 +53,7 @@ const Keyboard = (props) => {
           numColumns={9}
         />
       </View>
-      <View style={{ height: 60 }}>
+      <View style={{ height: 55 }}>
         <FlatList
           contentContainerStyle={styles.keyrow}
           data={chars3}

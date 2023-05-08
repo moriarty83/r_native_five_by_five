@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
 import { useAppState } from "../AppState";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const squareSize = windowWidth < 500 ? windowWidth / 5 - 1 : 100;
+let squareSize = windowWidth < 500 ? windowWidth / 5 - 1 : 100;
 
 const Space = (props) => {
   const { state, dispatch } = useAppState();
+  const boardHeight = (windowHeight - useHeaderHeight()) / 2;
+  console.log("boardHeight: ", boardHeight);
+  if (windowWidth < 500 && boardHeight < windowWidth) {
+    console.log("small screen: ", squareSize);
+    styles.letter.width = boardHeight / 5 - 3;
+    styles.letter.height = boardHeight / 5 - 3;
+    styles.letter.fontSize = 42;
+    console.log("new squaresize: ", squareSize);
+  }
 
   /////////// METHODS //////////
   const handleSpaceClick = () => {
@@ -107,31 +117,6 @@ const styles = StyleSheet.create({
     fontSize: 48,
     fontWeight: "700",
     backgroundColor: "#fff",
-  },
-  checkRow: {
-    width: 20,
-    height: squareSize,
-    margin: 2,
-    textAlign: "center",
-    alignItems: "center",
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#333333",
-    lineHeight: squareSize,
-  },
-  checkCol: {
-    width: squareSize,
-    height: 30,
-    margin: 2,
-    textAlign: "center",
-    alignItems: "center",
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#333333",
-    backgroundColor: "#333333",
-  },
-  showCheck: {
-    color: "green",
   },
   label: {
     fontSize: 12,

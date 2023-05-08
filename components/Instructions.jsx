@@ -9,7 +9,7 @@ const Instructions = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>
-        Fill in the board with as many 5-letter english words as possible.
+        Fill in the board with as many 5-letter English words as possible.
         {"\n\n"}
         Each day, 3 Fixed letters are randomly selected and placed on the board.
         When you've filled the board as best you can, click 'Finished' to end
@@ -20,8 +20,8 @@ const Instructions = ({ navigation }) => {
       <Text style={styles.title}>Scoring</Text>
       <Text style={styles.text}>
         Each letter in a valid word is worth points. Fixed letters are worth
-        more points that ones you enter yourself. The color of a space
-        indicateds how many points it is worth.{"\n"}
+        more points that ones you enter yourself. The color of a space indicates
+        how many points it is worth.{"\n"}
       </Text>
       <View style={styles.colorContainer}>
         <View style={styles.item}>
@@ -38,7 +38,7 @@ const Instructions = ({ navigation }) => {
         </View>
       </View>
       <Text style={styles.text}>
-        {"\n"}Each letter in the alphabet is also worth points
+        {"\n"}Each letter in the alphabet is also worth points.
       </Text>
       <View style={styles.lettersContainer}>
         {/*

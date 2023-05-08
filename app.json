@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "FiveByFive",
-    "slug": "FiveByFive",
+    "jsEngine": "hermes",
+    "name": "Wordnigma",
+    "slug": "Wordnigma",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,6 +30,12 @@
     },
     "web": {
       "favicon": "./assets/icon.png"
+    },
+    "description": "",
+    "extra": {
+      "eas": {
+        "projectId": "35995e9d-cb6c-4651-80ac-e3497281d416"
+      }
     }
   }
 }

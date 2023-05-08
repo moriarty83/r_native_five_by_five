@@ -1,5 +1,4 @@
 import React, { useReducer } from "react";
-import Rando from "js-rando";
 import dictionary from "./dictionary";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -76,6 +75,7 @@ const reducer = (state, action) => {
   switch (action.type) {
     /////////// LOAD GAME ////////////
     case "load":
+
     /////////// SELECT SPACE ///////////
     case "selectSpace":
       select = state.select;
@@ -123,7 +123,12 @@ const reducer = (state, action) => {
 
       // make new state
       checkedWords = checkWords(state, chars);
-      newState = { ...state, ...checkWords, ...getNextSpace(state, advance) };
+      newState = {
+        ...state,
+        ...checkWords,
+        ...getNextSpace(state, advance),
+        today: "5/8/2024",
+      };
       saveState(newState);
       saveState(newState);
       return newState;
@@ -195,8 +200,6 @@ async function saveState(newState) {
   } catch (e) {
     // save error
   }
-
-  console.log("Done.");
 }
 function generateChars() {
   chars = new Array(25).fill().map(() => {
