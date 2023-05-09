@@ -5,7 +5,7 @@ npm-debug.*
 *.jks
 *.p8
 *.p12
-*.key
+*.key`
 *.mobileprovision
 *.orig.*
 web-build/
@@ -75,4 +75,4 @@ yarn-error.log
 web-build/
 dist/
 
-# @end expo-cli
+# @end expo-cli`

@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppState } from "react-native";
 import {
   StyleSheet,
   Text,
@@ -34,11 +35,20 @@ const windowHeight = Dimensions.get("window").height;
 
 const Board = ({ navigation }) => {
   const { state, dispatch } = useAppState();
+  const [focusState, setFocusState] = useState(AppState.currentState);
+
   const headerHeight = useHeaderHeight();
   console.log(headerHeight);
   const openInstructions = () => {
     navigation.navigate("Instructions");
   };
+  const appStateListener = AppState.addEventListener(
+    "change",
+    (nextAppState) => {
+      console.log("Next AppState is: ", nextAppState);
+      setFocusState(nextAppState);
+    }
+  );
   const clickFinish = () => {
     Alert.alert(
       "Are you sure?",
@@ -77,11 +87,11 @@ const Board = ({ navigation }) => {
     const savedState = JSON.parse(jsonValue);
     console.log("state.today: ", state.today);
     console.log("savedState.today: ", savedState.today);
-
+    tempToday = new Date().toLocaleDateString().slice(0, 11);
     if (
       jsonValue != null &&
       savedState.today &&
-      savedState.today == state.today
+      savedState.today == tempToday
     ) {
       dispatch({
         type: "load",
@@ -89,14 +99,38 @@ const Board = ({ navigation }) => {
       });
     } else {
       console.log("saved data is not current");
+      dispatch({
+        type: "newgame",
+      });
     }
   };
   useEffect(() => {
     const getLoad = async () => {
+      console.log("running getLoad()");
       await loadState();
     };
     getLoad();
+    const appStateListener = AppState.addEventListener(
+      "change",
+      (nextAppState) => {
+        console.log("Next AppState is: ", nextAppState);
+        setFocusState(nextAppState);
+        if (nextAppState == "active") {
+          getLoad();
+        }
+      }
+    );
+
+    return () => {
+      appStateListener?.remove();
+    };
   }, []);
+  // useEffect(() => {
+  //   const getLoad = async () => {
+  //     await loadState();
+  //   };
+  //   getLoad();
+  // }, []);
   return (
     <View
       style={[styles.container, { height: windowHeight - useHeaderHeight() }]}

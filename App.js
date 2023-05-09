@@ -3,14 +3,14 @@ import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Board from "./components/Board";
 import Instructions from "./components/Instructions";
-import { AppState } from "./AppState";
+import { GameState } from "./AppState";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <AppState>
+      <GameState>
         <Stack.Navigator
           screenOptions={{
             headerBackTitleVisible: false,
@@ -19,7 +19,7 @@ export default function App() {
           <Stack.Screen
             name="Game"
             component={Board}
-            options={{ title: "Five by Five" }}
+            options={{ title: "Wordnigma" }}
           />
           <Stack.Screen
             name="Instructions"
@@ -29,7 +29,7 @@ export default function App() {
             }}
           />
         </Stack.Navigator>
-      </AppState>
+      </GameState>
     </NavigationContainer>
   );
 }

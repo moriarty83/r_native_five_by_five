@@ -10,13 +10,10 @@ let squareSize = windowWidth < 500 ? windowWidth / 5 - 1 : 100;
 const Space = (props) => {
   const { state, dispatch } = useAppState();
   const boardHeight = (windowHeight - useHeaderHeight()) / 2;
-  console.log("boardHeight: ", boardHeight);
   if (windowWidth < 500 && boardHeight < windowWidth) {
-    console.log("small screen: ", squareSize);
     styles.letter.width = boardHeight / 5 - 3;
     styles.letter.height = boardHeight / 5 - 3;
     styles.letter.fontSize = 42;
-    console.log("new squaresize: ", squareSize);
   }
 
   /////////// METHODS //////////

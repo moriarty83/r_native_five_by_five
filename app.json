@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.cmarshallmoriarty.fivebyfive",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.1"
     },
     "android": {
       "adaptiveIcon": {
@@ -36,6 +36,12 @@
       "eas": {
         "projectId": "35995e9d-cb6c-4651-80ac-e3497281d416"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/35995e9d-cb6c-4651-80ac-e3497281d416"
     }
   }
 }

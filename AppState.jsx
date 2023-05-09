@@ -7,7 +7,7 @@ import { XORShift } from "random-seedable";
 
 const today = new Date().toLocaleDateString().slice(0, 11);
 
-const rando = new XORShift(today.split("/").join(""));
+let rando = new XORShift(today.split("/").join(""));
 const dict = dictionary;
 
 export const letter_values = {
@@ -75,7 +75,28 @@ const reducer = (state, action) => {
   switch (action.type) {
     /////////// LOAD GAME ////////////
     case "load":
-
+      return { ...action.payload };
+    ///////////// NEW GAME /////////////
+    case "newgame":
+      const newToday = new Date().toLocaleDateString().slice(0, 11);
+      new XORShift(newToday.split("/").join(""));
+      newState = {
+        today: newToday,
+        activeSpace: 0,
+        activeRow: 0,
+        activeCol: 0,
+        selectAcross: true,
+        select: selectStates[0],
+        fixedChars: initialFixed,
+        chars: generateChars(),
+        acrossWords: new Array(5).fill(false),
+        downWords: new Array(5).fill(false),
+        scoredChars: new Array(5).fill(0),
+        showScores: false,
+        totalScore: 0,
+        gameOver: false,
+      };
+      return newState;
     /////////// SELECT SPACE ///////////
     case "selectSpace":
       select = state.select;
@@ -127,7 +148,6 @@ const reducer = (state, action) => {
         ...state,
         ...checkWords,
         ...getNextSpace(state, advance),
-        today: "5/8/2024",
       };
       saveState(newState);
       saveState(newState);
@@ -159,7 +179,7 @@ const AppContext = React.createContext(null);
 /////////////////////////
 // APP STATE COMPONENET
 /////////////////////////
-export function AppState(props) {
+export function GameState(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
