@@ -156,6 +156,18 @@ const reducer = (state, action) => {
       newState = { ...state };
       return newState;
 
+    case "clearLetters":
+      newState = { ...state }
+      chars = state.chars
+      for(let char of chars){
+        if(!char.fixed){
+          char.char = null
+          char.across = false
+          char.down = false
+        }
+      }
+
+      return {...newState, chars}
     /////////// SCORE GAME ///////////
     case "scoreGame":
       totalScore = scoreGame(state);

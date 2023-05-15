@@ -136,7 +136,7 @@ const Board = ({ navigation }) => {
       style={[styles.container, { height: windowHeight - useHeaderHeight() }]}
     >
       <View style={styles.section}>
-        <WordCounter style={styles.counter} />
+        <WordCounter style={styles.counter} gameOver={state.gameOver}/>
 
         <FlatList
           style={styles.flatList}
@@ -150,7 +150,7 @@ const Board = ({ navigation }) => {
 
         {state.gameOver == false ? (
           <Pressable style={styles.button} onPress={clickFinish}>
-            <Text style={styles.btnText}>Finsihed</Text>
+            <Text style={styles.btnText}>Finished</Text>
           </Pressable>
         ) : (
           <>

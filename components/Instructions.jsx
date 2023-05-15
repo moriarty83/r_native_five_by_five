@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { letter_values } from "../AppState";
 
 const Instructions = ({ navigation }) => {
@@ -7,14 +7,14 @@ const Instructions = ({ navigation }) => {
     navigation.goBack();
   };
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.text}>
         Fill in the board with as many 5-letter English words as possible.
         {"\n\n"}
         Each day, 3 Fixed letters are randomly selected and placed on the board.
         When you've filled the board as best you can, click 'Finished' to end
         today's game and recieve your score. You'll be able to play again
-        tomorrow with a new set of fixed letters.
+        tomorrow with a new set of Fixed letters.
         {"\n"}
       </Text>
       <Text style={styles.title}>Scoring</Text>
@@ -104,7 +104,7 @@ const Instructions = ({ navigation }) => {
       <TouchableOpacity style={styles.back} onPress={() => goBack()}>
         <Text style={styles.iconText}>{"\u2190"}</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
 
   lettersHeader: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 20,
     textDecorationLine: "underline",
     textAlign: "center",
   },
@@ -175,12 +175,12 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   back: {
+    marginTop: 20,
     width: 30,
     height: 30,
     borderRadius: 15,
     borderColor: "black",
     borderWidth: 2,
-    position: "absolute",
     left: 15,
     bottom: 30,
   },

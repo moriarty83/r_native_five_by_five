@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, View, FlatList, Dimensions } from "react-native";
+import {Alert, StyleSheet, Text, View, Button, FlatList, Dimensions } from "react-native";
 import { useAppState } from "../AppState";
 
 const windowWidth = Dimensions.get("window").width;
@@ -11,6 +11,42 @@ const WordCounter = (props) => {
   const itemStyle = windowWidth < 500 ? styles.itemMobile : styles.itemMablet;
 
   //////////// METHODS //////////
+  const renderClear = ()=>{
+    if(props.gameOver){
+      return(<></>)
+    }
+    else{
+      return(      <View>
+        <Button onPress={onClear} title="Clear" />
+      </View>)
+    }
+  }
+  const onClear = ()=>{
+    Alert.alert(
+      "Are you sure?",
+      "Clear all letters.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            for(let char of state.chars){
+              
+            }
+            dispatch({
+              type: "clearLetters",
+              payload: {},
+            });
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  }
   ///////////// RENDER ////////////
 
   return (
@@ -33,6 +69,7 @@ const WordCounter = (props) => {
           })}
         </View>
       </View>
+          {renderClear()}
 
       <View styles={styles.counter}>
         <Text style={styles.blacktext}>Down</Text>
