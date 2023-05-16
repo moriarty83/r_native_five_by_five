@@ -41,8 +41,7 @@ const Instructions = ({ navigation }) => {
         {"\n"}Each letter in the alphabet is also worth points.
       </Text>
       <View style={styles.lettersContainer}>
-        {/*
-         */}
+
         <View style={styles.lettersCol}>
           <Text style={styles.lettersHeader}>1{"\n"}Point</Text>
           {Object.keys(letter_values).map((key) => {
@@ -123,7 +122,8 @@ const styles = StyleSheet.create({
   lettersCol: {
     flexDirection: "column",
     alignItems: "center",
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
+    paddingBottom: 24,
   },
 
   lettersHeader: {
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   lettersContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
   item: {
     justifyContent: "center",
@@ -145,16 +145,18 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     margin: 1,
     flexDirection: "row",
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
+    margin: 8,
   },
 
   colorContainer: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-around",
+    width: "100%",
   },
   colorText: {
-    fontSize: 16,
+    fontSize: 12,
     textAlign: "center",
     textAlignVertical: "center",
   },
