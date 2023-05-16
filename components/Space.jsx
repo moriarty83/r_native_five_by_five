@@ -59,17 +59,16 @@ const Space = (props) => {
       selectedStyles.push(styles.twoWordsFixed);
     }
 
-    if (state.fixedChars[props.index.toString()]) {
-      selectedStyles.push(styles.fixedLetter);
-    }
-    if (props.index % 5 == 0) {
-      selectedStyles.push(styles.noLeftMargin);
-    }
-    if (props.index % 5 == 4) {
-      selectedStyles.push(styles.noRightMargin);
-    }
     return selectedStyles;
   };
+
+  const getTextStyle = () =>{
+    let textStyles = [styles.text]
+    if (state.chars[props.index.toString()].fixed) {
+      textStyles.push(styles.fixedLetter)
+    }
+    return textStyles
+  }
 
   const getChar = () => {
     if (state.gameOver && state.showScores) {
@@ -86,7 +85,7 @@ const Space = (props) => {
     <View style={styles.opacity}>
     <TouchableOpacity style={selectStyle()} onPress={() => handleSpaceClick()}>
       <Text
-        style={styles.text}
+        style={getTextStyle()}
         onChangeText={(newText) => handleTextChange(newText)}
         maxFontSizeMultiplier={1}
       >
@@ -124,8 +123,8 @@ const styles = StyleSheet.create({
       width: 0.75,
       height: 0.75,
     },
-shadowOpacity: .5,
-shadowRadius: 0.5,
+    shadowOpacity: .5,
+    shadowRadius: 0.5,
     
     fontWeight: "700",
     backgroundColor: "#fff",

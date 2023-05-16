@@ -216,8 +216,11 @@ export const useAppState = () => {
 
 // Generate fixed letters
 function genrateFixed() {
-  fixed = {};
-  while (Object.keys(fixed).length < 3) {
+  const day = new Date().getDay()
+  const maxFixed = day > 3 ? 2 : day > 0 ? 1 : 3 
+  console.log("maxFixed: ", maxFixed)
+  fixed = {}
+  while (Object.keys(fixed).length < maxFixed) {
     fixed[rando.randRange(0, 24)] = String.fromCharCode(
       rando.randRange(65, 90)
     );
