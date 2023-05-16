@@ -30,8 +30,8 @@ const Char = (props) => {
     ? styles.standardChar
     : styles.specialChar;
   return (
-    <TouchableOpacity onPress={() => handleCharClick()}>
-      <Text style={[styles.char, widthStyle]} maxLength={1}>
+    <TouchableOpacity style={[styles.opacity, widthStyle]} onPress={() => handleCharClick()}>
+      <Text style={styles.char} maxLength={1} maxFontSizeMultiplier={1}>
         {props.char}
       </Text>
     </TouchableOpacity>
@@ -39,13 +39,29 @@ const Char = (props) => {
 };
 
 const styles = StyleSheet.create({
-  char: {
+  opacity:{
+    justifyContent: 'center', //Centered vertically
+    alignItems: 'center', //Centered horizontally
+    backgroundColor: "#bbbbbb",
     height: 48,
     margin: 2,
+    borderColor: "#333333",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
+shadowOpacity: 1,
+shadowRadius: 0.5,
+  },
+  char: {
+    
+    
     textAlign: "center",
     fontSize: 32,
     fontWeight: "700",
-    backgroundColor: "#bbbbbb",
+    
   },
   standardChar: {
     width: charWidth,

@@ -101,9 +101,7 @@ const Instructions = ({ navigation }) => {
           })}
         </View>
       </View>
-      <TouchableOpacity style={styles.back} onPress={() => goBack()}>
-        <Text style={styles.iconText}>{"\u2190"}</Text>
-      </TouchableOpacity>
+
     </ScrollView>
   );
 };

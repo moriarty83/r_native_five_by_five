@@ -87,7 +87,7 @@ const reducer = (state, action) => {
         activeCol: 0,
         selectAcross: true,
         select: selectStates[0],
-        fixedChars: initialFixed,
+        fixedChars: genrateFixed(),
         chars: generateChars(),
         acrossWords: new Array(5).fill(false),
         downWords: new Array(5).fill(false),

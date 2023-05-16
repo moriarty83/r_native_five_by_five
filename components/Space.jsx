@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
+import { StyleSheet, Text, View,TouchableOpacity, Dimensions } from "react-native";
 import { useAppState } from "../AppState";
 import { useHeaderHeight } from "@react-navigation/elements";
 
@@ -83,10 +83,12 @@ const Space = (props) => {
   };
 
   return (
-    <TouchableOpacity onPress={() => handleSpaceClick()}>
+    <View style={styles.opacity}>
+    <TouchableOpacity style={selectStyle()} onPress={() => handleSpaceClick()}>
       <Text
-        style={selectStyle()}
+        style={styles.text}
         onChangeText={(newText) => handleTextChange(newText)}
+        maxFontSizeMultiplier={1}
       >
         {getChar()}
       </Text>
@@ -100,20 +102,36 @@ const Space = (props) => {
           : ""}
       </Text>
     </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  opacity:{
+
+    padding: 2,
+  },
   letter: {
+    justifyContent: 'center', //Centered vertically
+    alignItems: 'center', //Centered horizontally
     width: squareSize,
     height: squareSize,
     borderColor: "#333333",
     borderWidth: 1,
     textAlign: "center",
-    alignItems: "center",
-    fontSize: 48,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0.75,
+      height: 0.75,
+    },
+shadowOpacity: .5,
+shadowRadius: 0.5,
+    
     fontWeight: "700",
     backgroundColor: "#fff",
+  },
+  text: {
+    fontSize: 52,
   },
   label: {
     fontSize: 12,
@@ -146,10 +164,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#e0b14a",
   },
   noLeftMargin: {
-    borderLeftColor: "white",
   },
   noRightMargin: {
-    borderRightColor: "white",
   },
 });
 

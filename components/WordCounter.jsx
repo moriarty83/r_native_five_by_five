@@ -16,8 +16,8 @@ const WordCounter = (props) => {
       return(<></>)
     }
     else{
-      return(      <View>
-        <Button onPress={onClear} title="Clear" />
+      return(      <View >
+        <Button  onPress={onClear} title="Clear" />
       </View>)
     }
   }
@@ -52,7 +52,7 @@ const WordCounter = (props) => {
   return (
     <View style={styles.counterparent}>
       <View styles={styles.counter}>
-        <Text style={styles.blacktext}>Across</Text>
+        <Text style={styles.blacktext} maxFontSizeMultiplier={1.5}>Across</Text>
         <View style={styles.items}>
           {state.acrossWords.map((item, index) => {
             return (
@@ -72,7 +72,7 @@ const WordCounter = (props) => {
           {renderClear()}
 
       <View styles={styles.counter}>
-        <Text style={styles.blacktext}>Down</Text>
+        <Text maxFontSizeMultiplier={1.5} style={styles.blacktext}>Down</Text>
         <View style={styles.items}>
           {state.downWords.map((item, index) => {
             return (

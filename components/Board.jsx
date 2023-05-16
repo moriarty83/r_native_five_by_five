@@ -150,7 +150,7 @@ const Board = ({ navigation }) => {
 
         {state.gameOver == false ? (
           <Pressable style={styles.button} onPress={clickFinish}>
-            <Text style={styles.btnText}>Finished</Text>
+            <Text maxFontSizeMultiplier={1.5} style={styles.btnText}>Finished</Text>
           </Pressable>
         ) : (
           <>
