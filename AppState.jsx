@@ -124,10 +124,7 @@ const reducer = (state, action) => {
       const advance =
         action.payload != "\u232B"
           ? 1
-          : state.chars[state.activeSpace].char != null &&
-            state.chars[state.activeSpace].fixed == false
-          ? 0
-          : -1;
+          :  -1;
       // get nextSpace object based on whether or not we hit delete.
 
       // If letter is fixed, just advance space, do nothing else.
@@ -159,6 +156,9 @@ const reducer = (state, action) => {
     case "clearLetters":
       newState = { ...state }
       chars = state.chars
+      acrossWords = new Array(5).fill(false)
+      downWords = new Array(5).fill(false)
+      scoredChars = new Array(5).fill(0)
       for(let char of chars){
         if(!char.fixed){
           char.char = null
@@ -167,7 +167,7 @@ const reducer = (state, action) => {
         }
       }
 
-      return {...newState, chars}
+      return {...newState, chars, acrossWords, downWords, scoredChars}
     /////////// SCORE GAME ///////////
     case "scoreGame":
       totalScore = scoreGame(state);
