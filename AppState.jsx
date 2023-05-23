@@ -50,6 +50,8 @@ const initialFixed = genrateFixed();
 const selectStates = ["across", "down", "disabled"];
 const initialState = {
   today: today,
+
+  startWord: getStartWord(),
   activeSpace: 0,
   activeRow: 0,
   activeCol: 0,
@@ -82,6 +84,9 @@ const reducer = (state, action) => {
       new XORShift(newToday.split("/").join(""));
       newState = {
         today: newToday,
+        fixedAcross: generateFixedDirection(),
+        fixedIndex: generateFixedIndex(),
+        startWord: getStartWord(),
         activeSpace: 0,
         activeRow: 0,
         activeCol: 0,
@@ -215,6 +220,17 @@ export const useAppState = () => {
 /////////////////////////
 
 // Generate fixed letters
+function generateFixedDirection() {
+  const across = rando.randRange(0, 1) == 0 ? true : false
+  return across
+}
+
+function generateFixedIndex() {
+  const wordIndex = rando.randRange(0, 4)
+  return wordIndex
+}
+
+// Generate fixed letters
 function genrateFixed() {
   const day = new Date().getDay()
   const maxFixed = day > 3 ? 2 : day > 0 ? 1 : 3 
@@ -226,6 +242,21 @@ function genrateFixed() {
     );
   }
   return fixed;
+}
+
+// Get Starting Word
+function getStartWord() {
+  const wordsLength = Object.keys(dictionary).length
+  const keys = Object.keys(dictionary);
+  let firstWord = ''
+  let length = 0
+  while (length != 5) {
+    firstWord = keys[rando.randRange(0, wordsLength)]
+    length = firstWord.length
+  }
+  firstWord = firstWord.toUpperCase()
+  console.log(firstWord)
+  return firstWord;
 }
 
 async function saveState(newState) {
@@ -240,9 +271,18 @@ function generateChars() {
   chars = new Array(25).fill().map(() => {
     return { char: null, across: false, down: false, fixed: false };
   });
-  for (let fixed in initialFixed) {
-    chars[fixed].fixed = true;
-    chars[fixed].char = initialFixed[fixed];
+  const startWord = getStartWord()
+  const fixedAcross = generateFixedDirection()
+  const fixedIndex = generateFixedIndex()
+  for (let i = 0; i < startWord.length; i++) {
+    if(fixedAcross){
+      char = chars[i*5+fixedIndex]
+    }
+    else{
+      chars[5*fixedIndex + i]
+    }
+    char.fixed = true;
+    char.char = startWord[i];
   }
 
   return chars;
