@@ -14844,7 +14844,6 @@ export default dictionary = {
   snead: 1,
   sneak: 1,
   sneap: 1,
-  amapa: 1,
   drear: 1,
   banky: 1,
   dread: 1,

@@ -50,11 +50,11 @@ const initialFixed = genrateFixed();
 const selectStates = ["across", "down", "disabled"];
 const initialState = {
   today: today,
-
-  startWord: getStartWord(),
   activeSpace: 0,
   activeRow: 0,
   activeCol: 0,
+  fixedAcross: generateFixedDirection(),
+  fixedIndex: generateFixedIndex(),
   selectAcross: true,
   select: selectStates[0],
   fixedChars: initialFixed,
@@ -67,6 +67,12 @@ const initialState = {
   gameOver: false,
 };
 
+const initialCheckedWords = checkWords(initialState, initialState.chars)
+initialState.chars = initialCheckedWords.chars
+initialState.acrossWords = initialCheckedWords.acrossWords
+initialState.downWords = initialCheckedWords.downWords
+
+
 /////////////////////////
 // REDUCER
 /////////////////////////
@@ -77,6 +83,7 @@ const reducer = (state, action) => {
   switch (action.type) {
     /////////// LOAD GAME ////////////
     case "load":
+      
       return { ...action.payload };
     ///////////// NEW GAME /////////////
     case "newgame":
@@ -86,7 +93,6 @@ const reducer = (state, action) => {
         today: newToday,
         fixedAcross: generateFixedDirection(),
         fixedIndex: generateFixedIndex(),
-        startWord: getStartWord(),
         activeSpace: 0,
         activeRow: 0,
         activeCol: 0,
@@ -101,7 +107,8 @@ const reducer = (state, action) => {
         totalScore: 0,
         gameOver: false,
       };
-      return newState;
+      checkedWords = checkWords(newState, newState.chars)
+      return {...newState, ...checkWords};
     /////////// SELECT SPACE ///////////
     case "selectSpace":
       select = state.select;
@@ -221,7 +228,7 @@ export const useAppState = () => {
 
 // Generate fixed letters
 function generateFixedDirection() {
-  const across = rando.randRange(0, 1) == 0 ? true : false
+  const across = rando.randRange(0, 2) == 0 ? true : false
   return across
 }
 
@@ -234,7 +241,6 @@ function generateFixedIndex() {
 function genrateFixed() {
   const day = new Date().getDay()
   const maxFixed = day > 3 ? 2 : day > 0 ? 1 : 3 
-  console.log("maxFixed: ", maxFixed)
   fixed = {}
   while (Object.keys(fixed).length < maxFixed) {
     fixed[rando.randRange(0, 24)] = String.fromCharCode(
@@ -249,13 +255,15 @@ function getStartWord() {
   const wordsLength = Object.keys(dictionary).length
   const keys = Object.keys(dictionary);
   let firstWord = ''
-  let length = 0
+  let length = firstWord.length
+  
   while (length != 5) {
     firstWord = keys[rando.randRange(0, wordsLength)]
     length = firstWord.length
+
   }
+  
   firstWord = firstWord.toUpperCase()
-  console.log(firstWord)
   return firstWord;
 }
 
@@ -275,11 +283,11 @@ function generateChars() {
   const fixedAcross = generateFixedDirection()
   const fixedIndex = generateFixedIndex()
   for (let i = 0; i < startWord.length; i++) {
-    if(fixedAcross){
-      char = chars[i*5+fixedIndex]
+    if(fixedAcross == true){
+      char = chars[5*fixedIndex + i]
     }
     else{
-      chars[5*fixedIndex + i]
+      char = chars[i*5+fixedIndex]
     }
     char.fixed = true;
     char.char = startWord[i];
@@ -319,36 +327,54 @@ function getNextSpace(
 
 function checkWords(state, chars) {
   // TODO: If down ins selected, and space 23 (second to last), is filled to complete across word, it doesn't color.
-  let validAcross = false;
-  let validDown = false;
+
   let acrossWords = state.acrossWords;
   let downWords = state.downWords;
 
-  let acrossIndex = [];
-  let downIndex = [];
-  let across = "";
-  let down = "";
-
   // Populate words with chars
   for (let i = 0; i < 5; i++) {
-    acrossIndex.push(state.activeRow * 5 + i);
-    downIndex.push(i * 5 + state.activeCol);
+    let validAcross = false;
+    let validDown = false;
+    let across = {word: "", index: new Array(5)};
+    let down = {word: "", index: new Array(5)};
+    for (let j = 0; j < 5; j++){
+      across.word = across.word + chars[(i * 5 + j)].char;
+      across.index[j] = i * 5 + j
+      down.word = down.word + chars[(j * 5 + i)].char;
+      down.index[j] = j * 5 + i
+    }
+    console.log("downWord: ", down.word)
+    validAcross = across.length < 5 || !dict[across.word.toLowerCase()] ? false : true;
+    validDown = down.length < 5 || !dict[down.word.toLowerCase()] ? false : true;
+    
+    acrossWords[i] = validAcross
+    downWords[i] = validDown
+    if(validAcross == true){
+      for(let index of across.index){
+        chars[index].across = true
+      }
+    }
+    else{
+      for(let index of across.index){
+        chars[index].across = false
+      }
+    }
 
-    across =
-      chars[acrossIndex[i]].char != null
-        ? across + chars[acrossIndex[i]].char
-        : across;
-    down =
-      chars[downIndex[i]].char != null ? down + chars[downIndex[i]].char : down;
+    if(validDown == true){
+      for(let index of down.index){
+        chars[index].down = true
+      }
+    }
+    else{
+      for(let index of down.index){
+        chars[index].down = false
+      }
+    }
+    
   }
-  validAcross = across.length < 5 || !dict[across.toLowerCase()] ? false : true;
-  validDown = down.length < 5 || !dict[down.toLowerCase()] ? false : true;
-  for (let i = 0; i < 5; i++) {
-    chars[downIndex[i]]["down"] = validDown;
-    chars[acrossIndex[i]]["across"] = validAcross;
-  }
-  downWords[state.activeCol] = validDown;
-  acrossWords[state.activeRow] = validAcross;
+  console.log(acrossWords)
+
+  console.log(downWords)
   return { chars: chars, downWords: downWords, acrossWords: acrossWords };
 }
 
