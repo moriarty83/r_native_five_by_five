@@ -17,6 +17,7 @@ const WordCounter = (props) => {
     }
     else{
       return(      <View >
+        <Text style={{ fontSize: 18 }}>Score: {state.totalScore}</Text>
         <Button  onPress={onClear} title="Clear" />
       </View>)
     }

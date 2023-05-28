@@ -143,6 +143,7 @@ const Board = ({ navigation }) => {
           data={GenerateLetters()}
           renderItem={renderSpace}
           numColumns={5}
+          scrollEnabled={false}
         />
       </View>
       <View style={styles.section}>

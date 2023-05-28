@@ -43,6 +43,7 @@ const Keyboard = (props) => {
           data={chars1}
           renderItem={renderChar}
           numColumns={10}
+          scrollEnabled={false}
         />
       </View>
       <View style={{ height: 55 }}>
@@ -51,6 +52,8 @@ const Keyboard = (props) => {
           data={chars2}
           renderItem={renderChar}
           numColumns={9}
+          scrollEnabled={false}
+
         />
       </View>
       <View style={{ height: 55 }}>
@@ -59,6 +62,8 @@ const Keyboard = (props) => {
           data={chars3}
           renderItem={renderChar}
           numColumns={10}
+          scrollEnabled={false}
+
         />
       </View>
     </View>

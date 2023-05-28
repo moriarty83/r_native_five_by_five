@@ -7,7 +7,7 @@ import { XORShift } from "random-seedable";
 
 const today = new Date().toLocaleDateString().slice(0, 11);
 
-let rando = new XORShift(today.split("/").join(""));
+let rando = new XORShift(today.split("/").join("")+1);
 const dict = dictionary;
 
 export const letter_values = {
@@ -122,7 +122,7 @@ const reducer = (state, action) => {
             selectStates[(selectStates.indexOf(state.select) + 1) % 2];
         }
       }
-
+      
       newState = { ...state, ...payload };
       return newState;
 
@@ -158,6 +158,9 @@ const reducer = (state, action) => {
         ...checkWords,
         ...getNextSpace(state, advance),
       };
+      currentScore = scoreGame(newState, false);
+      newState.totalScore = currentScore.totalScore
+      console.log("newstate: ", newState)
       saveState(newState);
       saveState(newState);
       return newState;
@@ -182,7 +185,7 @@ const reducer = (state, action) => {
       return {...newState, chars, acrossWords, downWords, scoredChars}
     /////////// SCORE GAME ///////////
     case "scoreGame":
-      totalScore = scoreGame(state);
+      totalScore = scoreGame(state, true);
       newState = { ...state, ...totalScore };
       saveState(newState);
 
@@ -378,41 +381,44 @@ function checkWords(state, chars) {
   return { chars: chars, downWords: downWords, acrossWords: acrossWords };
 }
 
-function scoreGame(state) {
+function scoreGame(state, endGame = true) {
   let totalScore = 0;
   let bonus = 100;
   let scoredChars = state.scoredChars;
+  for (let i = 0; i < 5; i++ ){
+    if(state.acrossWords[i] == true){
+      if(state.fixedAcross == true && i == state.fixedIndex){
+        totalScore += 15
+      }
+      else{
+        totalScore += 25
+      }
+    }
+  }
+  for (let i = 0; i < 5; i++ ){
+    if(state.downWords[i] == true){
+      if(state.fixedAcross == false && i == state.fixedIndex){
+        totalScore += 15
+      }
+      else{
+        totalScore += 25
+      }
+    }
+  }
+
   for (let i = 0; i < 25; i++) {
     if (!state.chars[i].down == true || !state.chars[i].across == true) {
       bonus = 0;
     }
     let score = 0;
-    if (state.chars[i].across == true || state.chars[i].down == true) {
-      if (state.chars[i].across == true) {
-        score += 5;
-      }
-      if (state.chars[i].down == true) {
-        score += 5;
-      }
-      if (state.chars[i].fixed == true) {
-        score += 5;
-      }
-      if (
-        state.chars[i].down == true &&
-        state.chars[i].across == true &&
-        state.chars[i].fixed == true
-      ) {
-        score += 5;
-      }
-      score += letter_values[state.chars[i].char];
-    }
+    
     scoredChars[i] = score;
     totalScore += score;
   }
   totalScore += bonus;
   return {
     totalScore: totalScore,
-    gameOver: true,
+    gameOver: endGame,
     scoredChars: scoredChars,
     select: selectStates[2],
   };

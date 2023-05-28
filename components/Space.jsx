@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View,TouchableOpacity, Dimensions } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { useAppState } from "../AppState";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { letter_values } from "../AppState";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -31,11 +32,15 @@ const Space = (props) => {
   const selectStyle = () => {
     let selectedStyles = [];
     const char = state.chars[props.index];
+    console.log(char.char);
     if (state.gameOver == false) {
     }
+    // Active Letter Styles
     if (state.activeSpace == props.index && state.select != "disabled") {
       selectedStyles = [styles.letter, styles.activeLetter];
-    } else if (
+    }
+    // Active Row Styles
+    else if (
       (state.select == "across" && props.row == state.activeRow) ||
       (state.select == "down" && props.col == state.activeCol)
     ) {
@@ -43,32 +48,37 @@ const Space = (props) => {
     } else {
       selectedStyles = [styles.letter, styles.inactiveLetter];
     }
-
-    if (
-      (char.across == true && char.down == true && char.fixed == false) ||
-      (char.across == false && char.down == true && char.fixed == true) ||
-      (char.across == true && char.down == false && char.fixed == true)
+    // Letter Score styles
+    if ((char.char != null)&&
+      (char.across == true || char.down == true) && 
+      (char.across == true ||
+      char.down == true)
     ) {
-      selectedStyles.push(styles.twoWords);
-    } else if (
-      (char.across == true && char.down == false && char.fixed == false) ||
-      (char.across == false && char.down == true && char.fixed == false)
-    ) {
-      selectedStyles.push(styles.oneWord);
-    } else if (char.across == true && char.down == true && char.fixed == true) {
-      selectedStyles.push(styles.twoWordsFixed);
+      const scoreStyle =
+        letter_values[char.char] == 5
+          ? styles.backgroundGold
+          : letter_values[char.char] == 4
+          ? styles.backgroundPurple
+          : letter_values[char.char] == 3
+          ? styles.backgroundBlue
+          : letter_values[char.char] == 2
+          ? styles.backgroundGreen
+          : letter_values[char.char] == 1
+          ? styles.backgroundYellow
+          : styles.backgroundWhite;
+      selectedStyles.push(scoreStyle);
     }
 
     return selectedStyles;
   };
 
-  const getTextStyle = () =>{
-    let textStyles = [styles.text]
+  const getTextStyle = () => {
+    let textStyles = [styles.text];
     if (state.chars[props.index.toString()].fixed) {
-      textStyles.push(styles.fixedLetter)
+      textStyles.push(styles.fixedLetter);
     }
-    return textStyles
-  }
+    return textStyles;
+  };
 
   const getChar = () => {
     if (state.gameOver && state.showScores) {
@@ -83,36 +93,25 @@ const Space = (props) => {
 
   return (
     <View style={styles.opacity}>
-    <TouchableOpacity style={selectStyle()} onPress={() => handleSpaceClick()}>
-      <Text
-        style={getTextStyle()}
-        onChangeText={(newText) => handleTextChange(newText)}
-        maxFontSizeMultiplier={1}
-      >
-        {getChar()}
-      </Text>
-      <Text style={styles.label}>
-        {props.col == 0 && props.row == 0
-          ? 1
-          : props.row == 0
-          ? props.col + 1
-          : props.col == 0
-          ? props.row + 1
-          : ""}
-      </Text>
-    </TouchableOpacity>
+      <TouchableOpacity style={selectStyle()} onPress={() => handleSpaceClick()}>
+        <Text style={getTextStyle()} onChangeText={(newText) => handleTextChange(newText)} maxFontSizeMultiplier={1}>
+          {getChar()}
+        </Text>
+        <Text style={styles.label}>
+          {props.col == 0 && props.row == 0 ? 1 : props.row == 0 ? props.col + 1 : props.col == 0 ? props.row + 1 : ""}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  opacity:{
-
+  opacity: {
     padding: 2,
   },
   letter: {
-    justifyContent: 'center', //Centered vertically
-    alignItems: 'center', //Centered horizontally
+    justifyContent: "center", //Centered vertically
+    alignItems: "center", //Centered horizontally
     width: squareSize,
     height: squareSize,
     borderColor: "#333333",
@@ -123,9 +122,9 @@ const styles = StyleSheet.create({
       width: 0.75,
       height: 0.75,
     },
-    shadowOpacity: .5,
+    shadowOpacity: 0.5,
     shadowRadius: 0.5,
-    
+
     fontWeight: "700",
     backgroundColor: "#fff",
   },
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
   },
 
   activeLetter: {
-    borderColor: "#e0b14a",
+    borderColor: "#c22525",
     borderWidth: 4,
   },
   activeWord: {
@@ -153,19 +152,29 @@ const styles = StyleSheet.create({
   fixedLetter: {
     textDecorationLine: "underline",
   },
-  oneWord: {
+  backgroundGray: {
+    backgroundColor: "#bbbbbb",
+  },
+  backgroundYellow:{
+    backgroundColor: "#e6e697",
+  },
+  backgroundGreen: {
     backgroundColor: "#99c98f",
   },
-  twoWords: {
+  backgroundBlue: {
     backgroundColor: "#8b98fc",
   },
-  twoWordsFixed: {
+  backgroundGold: {
     backgroundColor: "#e0b14a",
   },
-  noLeftMargin: {
+  backgroundPurple: {
+    backgroundColor: "#b68fc9",
   },
-  noRightMargin: {
+  backgroundWhite: {
+    backgroundColor: "#fff",
   },
+  noLeftMargin: {},
+  noRightMargin: {},
 });
 
 export default Space;

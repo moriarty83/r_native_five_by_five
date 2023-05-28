@@ -11,39 +11,44 @@ const Instructions = ({ navigation }) => {
       <Text style={styles.text}>
         Fill in the board with as many 5-letter English words as possible.
         {"\n\n"}
-        Each day, 3 Fixed letters are randomly selected and placed on the board.
+        Each day, 1 starting word randomly selected and placed on the board.
         When you've filled the board as best you can, click 'Finished' to end
-        today's game and recieve your score. You'll be able to play again
-        tomorrow with a new set of Fixed letters.
+        today's game and share your score. You'll be able to play again
+        tomorrow with a new starting word.
         {"\n"}
       </Text>
       <Text style={styles.title}>Scoring</Text>
       <Text style={styles.text}>
-        Each letter in a valid word is worth points. Fixed letters are worth
-        more points that ones you enter yourself. The color of a space indicates
+        Each letter in a valid word is worth points. Letters that are part of the starting word worth
+        fewer points that ones you enter yourself. The color of a space indicates
         how many points it is worth.{"\n"}
       </Text>
       <View style={styles.colorContainer}>
         <View style={styles.item}>
           <Text style={styles.colorText}>0 Points</Text>
         </View>
-        <View style={[styles.item, styles.oneWord]}>
+        <View style={[styles.item, styles.backgroundGreen]}>
           <Text style={styles.colorText}>5 Points</Text>
         </View>
-        <View style={[styles.item, styles.twoWords]}>
+        <View style={[styles.item, styles.backgroundBlue]}>
           <Text style={styles.colorText}>10 Points</Text>
         </View>
-        <View style={[styles.item, styles.twoWordsFixed]}>
+        <View style={[styles.item, styles.backgroundPurple]}>
+          <Text style={styles.colorText}>15 Points</Text>
+        </View>
+        <View style={[styles.item, styles.backgroundGold]}>
           <Text style={styles.colorText}>20 Points</Text>
         </View>
       </View>
       <Text style={styles.text}>
-        {"\n"}Each letter in the alphabet is also worth points.
+        {"\n"}Additional points are also awarded for letter in the alphabet. The keyboard is also color coded to let you know how many points each is worth:
       </Text>
       <View style={styles.lettersContainer}>
-
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>1{"\n"}Point</Text>
+          <View style={[styles.lettersHeader, styles.backgroundGray]}>
+
+          <Text style={styles.lettersHeaderText}>1</Text>
+          </View>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 1)
               return (
@@ -54,7 +59,10 @@ const Instructions = ({ navigation }) => {
           })}
         </View>
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>2{"\n"}Points</Text>
+        <View style={[styles.lettersHeader, styles.backgroundGreen]}>
+
+<Text style={styles.lettersHeaderText}>2</Text>
+</View>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 2)
               return (
@@ -65,7 +73,10 @@ const Instructions = ({ navigation }) => {
           })}
         </View>
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>3{"\n"}Points</Text>
+        <View style={[styles.lettersHeader, styles.backgroundBlue]}>
+
+<Text style={styles.lettersHeaderText}>3</Text>
+</View>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 3)
               return (
@@ -77,7 +88,10 @@ const Instructions = ({ navigation }) => {
         </View>
 
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>4{"\n"}Points</Text>
+        <View style={[styles.lettersHeader, styles.backgroundPurple]}>
+
+<Text style={styles.lettersHeaderText}>4</Text>
+</View>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 4)
               return (
@@ -89,7 +103,10 @@ const Instructions = ({ navigation }) => {
         </View>
 
         <View style={styles.lettersCol}>
-          <Text style={styles.lettersHeader}>5{"\n"}Points</Text>
+        <View style={[styles.lettersHeader, styles.backgroundGold]}>
+
+<Text style={styles.lettersHeaderText}>5</Text>
+</View>
           {Object.keys(letter_values).map((key) => {
             if (letter_values[key] == 5)
               return (
@@ -117,7 +134,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   text: {
-    fontSize: 16,
+    fontSize: 18,
   },
   lettersCol: {
     flexDirection: "column",
@@ -127,12 +144,22 @@ const styles = StyleSheet.create({
   },
 
   lettersHeader: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 40,
+    height: 40,
+    textAlign: "center",
+    borderColor: "#333333",
+    borderWidth: 2,
+    padding: 2
+  },
+  lettersHeaderText:{
     fontWeight: "bold",
     fontSize: 20,
-    textDecorationLine: "underline",
-    textAlign: "center",
   },
   lettersContainer: {
+    marginTop: 8,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
@@ -161,14 +188,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
   },
-  oneWord: {
+  backgroundGreen: {
     backgroundColor: "#99c98f",
   },
-  twoWords: {
+  backgroundBlue: {
     backgroundColor: "#8b98fc",
   },
-  twoWordsFixed: {
+  backgroundPurple: {
+    backgroundColor: "#b68fc9",
+  },
+  backgroundGold: {
     backgroundColor: "#e0b14a",
+  },
+  backgroundGray:{
+    backgroundColor: "#bbbbbb",
   },
   iconText: {
     fontSize: 20,
