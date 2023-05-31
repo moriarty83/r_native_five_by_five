@@ -32,7 +32,6 @@ const Space = (props) => {
   const selectStyle = () => {
     let selectedStyles = [];
     const char = state.chars[props.index];
-    console.log(char.char);
     if (state.gameOver == false) {
     }
     // Active Letter Styles

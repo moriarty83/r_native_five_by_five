@@ -13,7 +13,6 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const charWidth = windowWidth / 10 - 4;
 
-console.log(windowHeight);
 
 const onlyLettersAndNumbers = (str) => {
   ``;

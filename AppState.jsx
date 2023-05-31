@@ -7,7 +7,7 @@ import { XORShift } from "random-seedable";
 
 const today = new Date().toLocaleDateString().slice(0, 11);
 
-let rando = new XORShift(today.split("/").join("")+1);
+let rando = new XORShift(today.split("/").join(""));
 const dict = dictionary;
 
 export const letter_values = {
@@ -46,19 +46,19 @@ export const letter_values = {
 /////////////////////////
 // INITIAL STATE
 /////////////////////////
-const initialFixed = genrateFixed();
 const selectStates = ["across", "down", "disabled"];
 const initialState = {
   today: today,
   activeSpace: 0,
   activeRow: 0,
   activeCol: 0,
-  fixedAcross: generateFixedDirection(),
-  fixedIndex: generateFixedIndex(),
+  fixedAcross: true,
+  fixedIndex: 0,
   selectAcross: true,
   select: selectStates[0],
-  fixedChars: initialFixed,
-  chars: generateChars(),
+  chars: new Array(25).fill().map(() => {
+    return { char: null, across: false, down: false, fixed: false };
+  }),
   acrossWords: new Array(5).fill(false),
   downWords: new Array(5).fill(false),
   scoredChars: new Array(5).fill(0),
@@ -89,25 +89,12 @@ const reducer = (state, action) => {
     case "newgame":
       const newToday = new Date().toLocaleDateString().slice(0, 11);
       new XORShift(newToday.split("/").join(""));
-      newState = {
-        today: newToday,
-        fixedAcross: generateFixedDirection(),
-        fixedIndex: generateFixedIndex(),
-        activeSpace: 0,
-        activeRow: 0,
-        activeCol: 0,
-        selectAcross: true,
-        select: selectStates[0],
-        fixedChars: genrateFixed(),
-        chars: generateChars(),
-        acrossWords: new Array(5).fill(false),
-        downWords: new Array(5).fill(false),
-        scoredChars: new Array(5).fill(0),
-        showScores: false,
-        totalScore: 0,
-        gameOver: false,
-      };
+      newState = {...initialState}
+      newState.today = newToday
+      newState ={...newState, ...generateChars()}
       checkedWords = checkWords(newState, newState.chars)
+      newState = {...newState, ...checkedWords}
+      newState.totalScore = scoreGame(newState, false).totalScore
       return {...newState, ...checkWords};
     /////////// SELECT SPACE ///////////
     case "selectSpace":
@@ -160,9 +147,8 @@ const reducer = (state, action) => {
       };
       currentScore = scoreGame(newState, false);
       newState.totalScore = currentScore.totalScore
-      console.log("newstate: ", newState)
       saveState(newState);
-      saveState(newState);
+
       return newState;
     case "toggleDirection":
       newState = { ...state };
@@ -181,8 +167,11 @@ const reducer = (state, action) => {
           char.down = false
         }
       }
-
-      return {...newState, chars, acrossWords, downWords, scoredChars}
+      checkedWords = checkWords(state, chars);
+      currentScore = scoreGame(newState, false);
+      newState.totalScore = currentScore.totalScore
+      saveState(newState);
+      return {...newState, chars, acrossWords, downWords, ...checkedWords, scoredChars}
     /////////// SCORE GAME ///////////
     case "scoreGame":
       totalScore = scoreGame(state, true);
@@ -237,6 +226,7 @@ function generateFixedDirection() {
 
 function generateFixedIndex() {
   const wordIndex = rando.randRange(0, 4)
+  console.log("generate Fixed index: ", wordIndex)
   return wordIndex
 }
 
@@ -285,6 +275,7 @@ function generateChars() {
   const startWord = getStartWord()
   const fixedAcross = generateFixedDirection()
   const fixedIndex = generateFixedIndex()
+  console.log("fixedAcross generate: ", fixedAcross)
   for (let i = 0; i < startWord.length; i++) {
     if(fixedAcross == true){
       char = chars[5*fixedIndex + i]
@@ -296,7 +287,7 @@ function generateChars() {
     char.char = startWord[i];
   }
 
-  return chars;
+  return {chars: chars, fixedAcross: fixedAcross, fixedIndex: fixedIndex};
 }
 
 function getNextSpace(
@@ -346,7 +337,6 @@ function checkWords(state, chars) {
       down.word = down.word + chars[(j * 5 + i)].char;
       down.index[j] = j * 5 + i
     }
-    console.log("downWord: ", down.word)
     validAcross = across.length < 5 || !dict[across.word.toLowerCase()] ? false : true;
     validDown = down.length < 5 || !dict[down.word.toLowerCase()] ? false : true;
     
@@ -375,9 +365,7 @@ function checkWords(state, chars) {
     }
     
   }
-  console.log(acrossWords)
 
-  console.log(downWords)
   return { chars: chars, downWords: downWords, acrossWords: acrossWords };
 }
 
@@ -397,6 +385,10 @@ function scoreGame(state, endGame = true) {
   }
   for (let i = 0; i < 5; i++ ){
     if(state.downWords[i] == true){
+      console.log("fixedAcross: ", state.fixedAcross)
+      console.log("fixedIndex: ", state.fixedIndex)
+      console.log("i: ", i)
+
       if(state.fixedAcross == false && i == state.fixedIndex){
         totalScore += 15
       }
@@ -405,15 +397,18 @@ function scoreGame(state, endGame = true) {
       }
     }
   }
-
+  
   for (let i = 0; i < 25; i++) {
+    let letterScore = 0;
     if (!state.chars[i].down == true || !state.chars[i].across == true) {
       bonus = 0;
     }
-    let score = 0;
+    if(state.chars[i].down == true || state.chars[i].across){
+      letterScore = letter_values[state.chars[i].char]
+    }
     
-    scoredChars[i] = score;
-    totalScore += score;
+    scoredChars[i] = letterScore;
+    totalScore += letterScore;
   }
   totalScore += bonus;
   return {

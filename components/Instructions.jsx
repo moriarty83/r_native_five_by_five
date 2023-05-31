@@ -188,6 +188,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
   },
+  backgroundYellow:{
+    backgroundColor: "#e6e697",
+  },
   backgroundGreen: {
     backgroundColor: "#99c98f",
   },
