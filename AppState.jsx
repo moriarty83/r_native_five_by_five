@@ -309,7 +309,7 @@ function getNextSpace(
     nextSpace["activeRow"] = (thisState.activeRow + advance).mod(5);
     nextSpace["activeSpace"] = nextSpace.activeRow * 5 + thisState["activeCol"];
   }
-  if (thisState.chars[nextSpace.activeSpace].fixed == true) {
+  if (thisState.chars[nextSpace.activeSpace].fixed == true && ((thisState.fixedAcross == true && thisState.select != 'across')||(thisState.fixedAcross == false && thisState.select != 'down') ) ) {
     thisState.activeRow = nextSpace.activeRow;
     thisState.activeCol = nextSpace.activeCol;
     thisState.activeSpace = nextSpace.activeSpace;
