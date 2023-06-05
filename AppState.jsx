@@ -95,6 +95,7 @@ const reducer = (state, action) => {
       checkedWords = checkWords(newState, newState.chars)
       newState = {...newState, ...checkedWords}
       newState.totalScore = scoreGame(newState, false).totalScore
+      saveState({...newState, ...checkWords})
       return {...newState, ...checkWords};
     /////////// SELECT SPACE ///////////
     case "selectSpace":
