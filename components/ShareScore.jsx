@@ -1,12 +1,13 @@
 import React from "react";
 import { Alert, Share, View, Button } from "react-native";
 import { useAppState } from "../AppState";
+import { fetchStartWord } from "../AppState";
 
 const ShareScore = () => {
   const { state, dispatch } = useAppState();
   const getMessage = () => {
-    let chars = state.chars;
-    let msg = `Wordnigma\n${state.today}\nScore: ${state.totalScore}\n`;
+    let chars = state.scoredChars;
+    let msg = `Crosswordify\n${state.today}: ${fetchStartWord()}\nScore: ${state.totalScore}\n`;
     for (let i = 0; i < 25; i++) {
       msg = msg + getSquare(chars[i]);
       if (i % 5 == 4) {
@@ -15,18 +16,19 @@ const ShareScore = () => {
     }
     return msg;
   };
+  //🟧
 
   const getSquare = (char) => {
-    if (char.across == true && char.down == true && char.fixed == true) {
+    if (char == 1) {
       return "🟨";
-    } else if (
-      (char.across == true && char.fixed == true) ||
-      (char.down == true && char.fixed == true) ||
-      (char.down == true && char.across == true && char.fixed == false)
-    ) {
-      return "🟦";
-    } else if (char.across == true || char.down == true) {
+    } else if (char == 2) {
       return "🟩";
+    } else if (char == 3) {
+      return "🟦";
+    } else if (char == 4) {
+      return "🟪";
+    } else if (char == 5) {
+      return "🟧";
     } else {
       return "⬜";
     }

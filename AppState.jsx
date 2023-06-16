@@ -8,6 +8,7 @@ import { XORShift } from "random-seedable";
 const today = new Date().toLocaleDateString().slice(0, 11);
 
 let rando = new XORShift(today.split("/").join(""));
+let startWord = null
 const dict = dictionary;
 
 export const letter_values = {
@@ -43,6 +44,8 @@ export const letter_values = {
   J: 5,
 };
 
+export const fetchStartWord = ()=>{return startWord}
+
 /////////////////////////
 // INITIAL STATE
 /////////////////////////
@@ -61,7 +64,7 @@ const initialState = {
   }),
   acrossWords: new Array(5).fill(false),
   downWords: new Array(5).fill(false),
-  scoredChars: new Array(5).fill(0),
+  scoredChars: new Array(25).fill(0),
   showScores: false,
   totalScore: 0,
   gameOver: false,
@@ -88,7 +91,7 @@ const reducer = (state, action) => {
     ///////////// NEW GAME /////////////
     case "newgame":
       const newToday = new Date().toLocaleDateString().slice(0, 11);
-      new XORShift(newToday.split("/").join(""));
+      rando = new XORShift(newToday.split("/").join(""));
       newState = {...initialState}
       newState.today = newToday
       newState ={...newState, ...generateChars()}
@@ -160,7 +163,7 @@ const reducer = (state, action) => {
       chars = state.chars
       acrossWords = new Array(5).fill(false)
       downWords = new Array(5).fill(false)
-      scoredChars = new Array(5).fill(0)
+      scoredChars = new Array(25).fill(0)
       for(let char of chars){
         if(!char.fixed){
           char.char = null
@@ -273,7 +276,7 @@ function generateChars() {
   chars = new Array(25).fill().map(() => {
     return { char: null, across: false, down: false, fixed: false };
   });
-  const startWord = getStartWord()
+  startWord = getStartWord()
   const fixedAcross = generateFixedDirection()
   const fixedIndex = generateFixedIndex()
   console.log("fixedAcross generate: ", fixedAcross)
