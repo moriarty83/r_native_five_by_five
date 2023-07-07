@@ -11,7 +11,7 @@ const Instructions = ({ navigation }) => {
       <Text style={styles.text}>
         Fill in the board with as many 5-letter English words as possible.
         {"\n\n"}
-        Each day, 1 starting word randomly selected and placed on the board.
+        Each day, 1 starting word will be randomly selected and placed on the board.
         When you've filled the board as best you can, click 'Finished' to end
         today's game and share your score. You'll be able to play again
         tomorrow with a new starting word.
@@ -19,33 +19,14 @@ const Instructions = ({ navigation }) => {
       </Text>
       <Text style={styles.title}>Scoring</Text>
       <Text style={styles.text}>
-        Each letter in a valid word is worth points. Letters that are part of the starting word worth
-        fewer points that ones you enter yourself. The color of a space indicates
-        how many points it is worth.{"\n"}
+        Each valid word is worth points: 25 points for every word you enter, 15 points for the starting word..{"\n"}
       </Text>
-      <View style={styles.colorContainer}>
-        <View style={styles.item}>
-          <Text style={styles.colorText}>0 Points</Text>
-        </View>
-        <View style={[styles.item, styles.backgroundGreen]}>
-          <Text style={styles.colorText}>5 Points</Text>
-        </View>
-        <View style={[styles.item, styles.backgroundBlue]}>
-          <Text style={styles.colorText}>10 Points</Text>
-        </View>
-        <View style={[styles.item, styles.backgroundPurple]}>
-          <Text style={styles.colorText}>15 Points</Text>
-        </View>
-        <View style={[styles.item, styles.backgroundGold]}>
-          <Text style={styles.colorText}>20 Points</Text>
-        </View>
-      </View>
       <Text style={styles.text}>
         {"\n"}Additional points are also awarded for letter in the alphabet. The keyboard is also color coded to let you know how many points each is worth:
       </Text>
       <View style={styles.lettersContainer}>
         <View style={styles.lettersCol}>
-          <View style={[styles.lettersHeader, styles.backgroundGray]}>
+          <View style={[styles.lettersHeader, styles.backgroundYellow]}>
 
           <Text style={styles.lettersHeaderText}>1</Text>
           </View>

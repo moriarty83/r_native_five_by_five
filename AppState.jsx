@@ -1,5 +1,6 @@
 import React, { useReducer } from "react";
 import dictionary from "./dictionary";
+import startWords from "./startWords";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const rando = new Rando();
@@ -10,6 +11,7 @@ const today = new Date().toLocaleDateString().slice(0, 11);
 let rando = new XORShift(today.split("/").join(""));
 let startWord = null
 const dict = dictionary;
+const startingWords = startWords;
 
 export const letter_values = {
   E: 1,
@@ -119,7 +121,7 @@ const reducer = (state, action) => {
 
     /////////// ENTER LETTER ///////////
     case "enterLetter":
-      const spaceToFill = state.activeSpace;
+      let spaceToFill = state.activeSpace;
       if (action.payload == "\u21E5") {
         return { ...state, ...getNextSpace(state) };
       }
@@ -134,7 +136,8 @@ const reducer = (state, action) => {
       if (state.chars[spaceToFill].fixed) {
         return { ...state, ...getNextSpace(state, advance) };
       }
-
+      const nextSpace = getNextSpace(state, advance)
+      spaceToFill = action.payload == "\u232B" ? nextSpace.activeSpace : spaceToFill
       // Make temporary chars
       let chars = [...state.chars];
 
@@ -249,8 +252,8 @@ function genrateFixed() {
 
 // Get Starting Word
 function getStartWord() {
-  const wordsLength = Object.keys(dictionary).length
-  const keys = Object.keys(dictionary);
+  const wordsLength = Object.keys(startingWords).length
+  const keys = Object.keys(startingWords);
   let firstWord = ''
   let length = firstWord.length
   
