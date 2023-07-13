@@ -121,23 +121,22 @@ const reducer = (state, action) => {
 
     /////////// ENTER LETTER ///////////
     case "enterLetter":
-      let spaceToFill = state.activeSpace;
+      const spaceToFill = state.activeSpace;
       if (action.payload == "\u21E5") {
         return { ...state, ...getNextSpace(state) };
       }
       // Check to see if we hit delete
       const advance =
         action.payload != "\u232B"
-          ? 1
-          :  -1;
+          ? 1 :
+          state.chars[state.activeSpace]["char"] != null ? 0 :  -1;
       // get nextSpace object based on whether or not we hit delete.
 
       // If letter is fixed, just advance space, do nothing else.
       if (state.chars[spaceToFill].fixed) {
         return { ...state, ...getNextSpace(state, advance) };
       }
-      const nextSpace = getNextSpace(state, advance)
-      spaceToFill = action.payload == "\u232B" ? nextSpace.activeSpace : spaceToFill
+      
       // Make temporary chars
       let chars = [...state.chars];
 
@@ -306,6 +305,7 @@ function getNextSpace(
     activeRow: state.activeRow,
   }
 ) {
+  console.log(state.chars[state.activeSpace])
   let thisState = state;
   newAdvance = advance;
 
