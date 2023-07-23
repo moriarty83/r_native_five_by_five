@@ -1,9 +1,9 @@
 {
   "expo": {
     "jsEngine": "hermes",
-    "name": "Wordnigma",
-    "slug": "Wordnigma",
-    "version": "1.1.3",
+    "name": "Crosswordify",
+    "slug": "crosswordify",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -17,16 +17,16 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.cmarshallmoriarty.fivebyfive",
-      "buildNumber": "1.1.3"
+      "bundleIdentifier": "com.cmarshallmoriarty.crosswordify",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.cmarshallmoriarty.fivebyfive",
-      "versionCode": 9
+      "package": "com.cmarshallmoriarty.crosswordify",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/icon.png"
@@ -34,14 +34,14 @@
     "description": "",
     "extra": {
       "eas": {
-        "projectId": "35995e9d-cb6c-4651-80ac-e3497281d416"
+        "projectId": "03a9495b-25cb-4b5f-87eb-433d16790df9"
       }
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/35995e9d-cb6c-4651-80ac-e3497281d416"
+      "url": "https://u.expo.dev/03a9495b-25cb-4b5f-87eb-433d16790df9"
     }
   }
 }
