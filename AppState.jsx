@@ -122,6 +122,7 @@ const reducer = (state, action) => {
     /////////// ENTER LETTER ///////////
     case "enterLetter":
       const spaceToFill = state.activeSpace;
+      // Check to see if we hit tab.
       if (action.payload == "\u21E5") {
         return { ...state, ...getNextSpace(state) };
       }
