@@ -6,12 +6,13 @@ import { letter_values } from "../AppState";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-let squareSize = windowWidth < 500 ? windowWidth / 5 - 1 : 100;
-
+let squareSize = windowWidth < 390 ? windowWidth / 5 - 1 : 70;
+console.log("window width: ", windowWidth)
 const Space = (props) => {
   const { state, dispatch } = useAppState();
-  const boardHeight = (windowHeight - useHeaderHeight()) / 2;
-  if (windowWidth < 500 && boardHeight < windowWidth) {
+  const originalBoardHeight = (windowHeight - useHeaderHeight()) / 2
+  const boardHeight = windowHeight > 1920 ? originalBoardHeight : originalBoardHeight * .9;
+  if (windowWidth < 390 && boardHeight < windowWidth) {
     styles.letter.width = boardHeight / 5 - 3;
     styles.letter.height = boardHeight / 5 - 3;
     styles.letter.fontSize = 42;
@@ -72,7 +73,11 @@ const Space = (props) => {
   };
 
   const getTextStyle = () => {
+    if (windowWidth < 390) {
+      styles.text.fontSize = 36 * boardHeight / originalBoardHeight
+    }
     let textStyles = [styles.text];
+
     if (state.chars[props.index.toString()].fixed) {
       textStyles.push(styles.fixedLetter);
     }
@@ -128,7 +133,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   text: {
-    fontSize: 52,
+    fontSize: 48,
   },
   label: {
     fontSize: 12,
