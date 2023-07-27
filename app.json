@@ -3,7 +3,7 @@
     "jsEngine": "hermes",
     "name": "Crosswordify",
     "slug": "crosswordify",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.cmarshallmoriarty.crosswordify",
-      "buildNumber": "1.0.2"
+      "buildNumber": "1.0.3"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +26,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.cmarshallmoriarty.crosswordify",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/icon.png"
