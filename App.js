@@ -19,7 +19,7 @@ export default function App() {
           <Stack.Screen
             name="Game"
             component={Board}
-            options={{ title: "Wordnigma" }}
+            options={{ title: "Crosswordify" }}
           />
           <Stack.Screen
             name="Instructions"
