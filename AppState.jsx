@@ -233,7 +233,6 @@ function generateFixedDirection() {
 
 function generateFixedIndex() {
   const wordIndex = rando.randRange(0, 4)
-  console.log("generate Fixed index: ", wordIndex)
   return wordIndex
 }
 
@@ -282,7 +281,6 @@ function generateChars() {
   startWord = getStartWord()
   const fixedAcross = generateFixedDirection()
   const fixedIndex = generateFixedIndex()
-  console.log("fixedAcross generate: ", fixedAcross)
   for (let i = 0; i < startWord.length; i++) {
     if(fixedAcross == true){
       char = chars[5*fixedIndex + i]
@@ -294,7 +292,7 @@ function generateChars() {
     char.char = startWord[i];
   }
 
-  return {chars: chars, fixedAcross: fixedAcross, fixedIndex: fixedIndex};
+  return {chars: chars, fixedAcross: fixedAcross, fixedIndex: fixedIndex, startWord: startWord};
 }
 
 function getNextSpace(
@@ -306,7 +304,6 @@ function getNextSpace(
     activeRow: state.activeRow,
   }
 ) {
-  console.log(state.chars[state.activeSpace])
   let thisState = state;
   newAdvance = advance;
 
@@ -393,9 +390,6 @@ function scoreGame(state, endGame = true) {
   }
   for (let i = 0; i < 5; i++ ){
     if(state.downWords[i] == true){
-      console.log("fixedAcross: ", state.fixedAcross)
-      console.log("fixedIndex: ", state.fixedIndex)
-      console.log("i: ", i)
 
       if(state.fixedAcross == false && i == state.fixedIndex){
         totalScore += 15
@@ -419,6 +413,7 @@ function scoreGame(state, endGame = true) {
     totalScore += letterScore;
   }
   totalScore += bonus;
+
   return {
     totalScore: totalScore,
     gameOver: endGame,
@@ -426,6 +421,78 @@ function scoreGame(state, endGame = true) {
     select: selectStates[2],
   };
 }
+
+export async function submitGame(state) {
+  try {
+    // Default options are marked with *
+    const response = await fetch("https://api-oqlbag234q-uc.a.run.app/submitGame", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(state), // Use "state" instead of "data"
+    });
+
+    console.log("response: ", JSON.stringify(response));
+
+    if (!response.ok) {
+      // If the response status is not OK (e.g., 4xx or 5xx status code)
+      // You can throw an error or handle it accordingly
+      throw new Error("Network response was not OK.");
+    }
+
+    // If the response is successful, parse the JSON response
+    return response.json(); // parses JSON response into native JavaScript objects
+  } catch (error) {
+    // Handle any errors that occur during the fetch request
+    console.error("Error submitting the game:", error.message);
+    throw error; // Re-throw the error to notify the caller about the error
+  }
+}
+
+export async function getStats(startDate, additionalDays) {
+  const endDate = additionalDays > 0 ? getEndDate(startDate, additionalDays) : null
+
+  try {
+    // Default options are marked with *
+    const response = await fetch(`https://api-oqlbag234q-uc.a.run.app/stats?startdate=${startDate}${endDate ? "&"+endDate : ""}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(state), // Use "state" instead of "data"
+    });
+
+    console.log("response: ", JSON.stringify(response));
+
+    if (!response.ok) {
+      // If the response status is not OK (e.g., 4xx or 5xx status code)
+      // You can throw an error or handle it accordingly
+      throw new Error("Network response was not OK.");
+    }
+
+    // If the response is successful, parse the JSON response
+    return response.json(); // parses JSON response into native JavaScript objects
+  } catch (error) {
+    // Handle any errors that occur during the fetch request
+    console.error("Error submitting the game:", error.message);
+    throw error; // Re-throw the error to notify the caller about the error
+  }
+}
+
+function getEndDate(startDate, days) {
+  const date = new Date(startDate);
+  date.setDate(date.getDate() - days);
+  
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1);
+  const day = String(date.getDate());
+  
+  return `${month}/${day}/${year}`;
+}
+
+
+
 
 // New method to correct for negative modulo
 Number.prototype.mod = function (n) {

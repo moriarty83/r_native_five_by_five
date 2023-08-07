@@ -7,7 +7,6 @@ import { letter_values } from "../AppState";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 let squareSize = windowWidth < 390 ? windowWidth / 5 - 1 : 70;
-console.log("window width: ", windowWidth)
 const Space = (props) => {
   const { state, dispatch } = useAppState();
   const originalBoardHeight = (windowHeight - useHeaderHeight()) / 2

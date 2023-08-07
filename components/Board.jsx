@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { useAppState } from "../AppState";
+import { useAppState, submitGame, getStats } from "../AppState";
 import Space from "./Space";
 import Keyboard from "./Keyboard";
 import WordCounter from "./WordCounter";
@@ -47,7 +47,7 @@ const Board = ({ navigation }) => {
       setFocusState(nextAppState);
     }
   );
-  const clickFinish = () => {
+  const clickFinish =  () => {
     Alert.alert(
       "Are you sure?",
       "Finish and score your game.",
@@ -59,17 +59,34 @@ const Board = ({ navigation }) => {
         },
         {
           text: "OK",
-          onPress: () => {
-            dispatch({
-              type: "scoreGame",
-              payload: {},
-            });
-          },
+          onPress: () => handleFinishOK(),
         },
       ],
       { cancelable: true }
     );
   };
+
+  const handleFinishOK = async () => {
+    dispatch({
+      type: "scoreGame",
+      payload: {},
+    });
+  
+    try {
+      await submitGame(state);
+    } catch (error) {
+      // Handle any errors that occur during submitGame
+      console.error("Error submitting the game:", error);
+      // You may want to show an error message to the user here
+    }
+    try{
+      await getStats(state.today, 3);
+    }catch(error){
+      console.error("Error getting stats:", error);
+
+    }
+  };
+
   ///////////// RENDER ////////////
   const renderSpace = ({ item }) => (
     <Space

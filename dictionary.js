@@ -194,6 +194,7 @@ export default dictionary = {
   rice: 1,
   kerne: 1,
   plate: 1,
+  latte: 1, 
   plato: 1,
   ceil: 1,
   platt: 1,
