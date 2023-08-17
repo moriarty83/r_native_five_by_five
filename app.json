@@ -1,47 +1,45 @@
 {
-  "expo": {
-    "jsEngine": "hermes",
-    "name": "Crosswordify",
-    "slug": "crosswordify",
-    "version": "1.0.4",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.cmarshallmoriarty.crosswordify",
-      "buildNumber": "1.0.4"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.cmarshallmoriarty.crosswordify",
-      "versionCode": 6
-    },
-    "web": {
-      "favicon": "./assets/icon.png"
-    },
-    "description": "",
-    "extra": {
-      "eas": {
-        "projectId": "03a9495b-25cb-4b5f-87eb-433d16790df9"
-      }
-    },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/03a9495b-25cb-4b5f-87eb-433d16790df9"
-    }
-  }
+	"expo": {
+		"jsEngine": "hermes",
+		"name": "Crosswordify",
+		"slug": "crosswordify",
+		"version": "1.0.5",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "light",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.cmarshallmoriarty.crosswordify",
+			"buildNumber": "1.0.5"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/icon.png",
+				"backgroundColor": "#ffffff"
+			},
+			"package": "com.cmarshallmoriarty.crosswordify",
+			"versionCode": 7
+		},
+		"web": {
+			"favicon": "./assets/icon.png"
+		},
+		"description": "",
+		"extra": {
+			"eas": {
+				"projectId": "03a9495b-25cb-4b5f-87eb-433d16790df9"
+			}
+		},
+		"runtimeVersion": {
+			"policy": "sdkVersion"
+		},
+		"updates": {
+			"url": "https://u.expo.dev/03a9495b-25cb-4b5f-87eb-433d16790df9"
+		}
+	}
 }

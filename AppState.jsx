@@ -70,6 +70,7 @@ const initialState = {
   showScores: false,
   totalScore: 0,
   gameOver: false,
+  stats: []
 };
 
 const initialCheckedWords = checkWords(initialState, initialState.chars)
@@ -186,7 +187,12 @@ const reducer = (state, action) => {
       saveState(newState);
 
       return newState;
+    case "showstats":
+      stats = sortAndFormatStats(action.payload)
 
+      newState = {...state, stats}
+      saveFinalGAme(newState);
+      return newState
     default:
       return state;
   }
@@ -274,6 +280,16 @@ async function saveState(newState) {
     // save error
   }
 }
+
+async function saveFinalGAme(newState) {
+  try {
+    const jsonValue = JSON.stringify(newState);
+    await AsyncStorage.setItem(`game-${newState.today}`, jsonValue);
+  } catch (e) {
+    // save error
+  }
+}
+
 function generateChars() {
   chars = new Array(25).fill().map(() => {
     return { char: null, across: false, down: false, fixed: false };
@@ -422,7 +438,7 @@ function scoreGame(state, endGame = true) {
   };
 }
 
-export async function submitGame(state) {
+export async function submitGame(gameState) {
   try {
     // Default options are marked with *
     const response = await fetch("https://api-oqlbag234q-uc.a.run.app/submitGame", {
@@ -430,10 +446,10 @@ export async function submitGame(state) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(state), // Use "state" instead of "data"
+      body: JSON.stringify(gameState), // Use "state" instead of "data"
     });
 
-    console.log("response: ", JSON.stringify(response));
+    console.log("response: ", JSON.stringify(response.body));
 
     if (!response.ok) {
       // If the response status is not OK (e.g., 4xx or 5xx status code)
@@ -450,48 +466,37 @@ export async function submitGame(state) {
   }
 }
 
-export async function getStats(startDate, additionalDays) {
-  const endDate = additionalDays > 0 ? getEndDate(startDate, additionalDays) : null
 
-  try {
-    // Default options are marked with *
-    const response = await fetch(`https://api-oqlbag234q-uc.a.run.app/stats?startdate=${startDate}${endDate ? "&"+endDate : ""}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(state), // Use "state" instead of "data"
-    });
 
-    console.log("response: ", JSON.stringify(response));
-
-    if (!response.ok) {
-      // If the response status is not OK (e.g., 4xx or 5xx status code)
-      // You can throw an error or handle it accordingly
-      throw new Error("Network response was not OK.");
-    }
-
-    // If the response is successful, parse the JSON response
-    return response.json(); // parses JSON response into native JavaScript objects
-  } catch (error) {
-    // Handle any errors that occur during the fetch request
-    console.error("Error submitting the game:", error.message);
-    throw error; // Re-throw the error to notify the caller about the error
-  }
+export function getStartDate(startDate, days) {
+  const parts = startDate.split('/');
+  const month = parseInt(parts[0], 10);
+  const day = parseInt(parts[1], 10);
+  const year = parseInt(parts[2], 10);
+  
+  const date = new Date(year, month - 1, day);
+  
+  date.setDate(date.getDate() - days); // Subtract days
+  
+  const newYear = date.getFullYear();
+  const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+  const newDay = String(date.getDate()).padStart(2, '0');
+  
+  return `${newMonth}/${newDay}/${newYear}`;
 }
 
-function getEndDate(startDate, days) {
-  const date = new Date(startDate);
-  date.setDate(date.getDate() - days);
-  
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1);
-  const day = String(date.getDate());
-  
-  return `${month}/${day}/${year}`;
+function sortAndFormatStats(stats){
+  let newStats = []
+  for(let day in stats){
+      let newObject = {date: day}
+      newObject["scores"] = Object.entries(stats[day]).filter(([key]) => !isNaN(parseInt(key))) // Filter out non-numeric keys
+      .map(([key, value]) => [parseInt(key), value])
+      .sort((a, b) => b[0] - a[0]);
+      newObject["word"]=stats[day]["word"]
+      newStats.push(newObject)
+      }
+  return newStats
 }
-
-
 
 
 // New method to correct for negative modulo
