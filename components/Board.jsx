@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState } from "react-native";
+import { AppState, ActivityIndicator } from "react-native";
 import {
 	StyleSheet,
 	Text,
@@ -37,6 +37,7 @@ const windowHeight = Dimensions.get("window").height;
 const Board = ({ navigation }) => {
 	const { state, dispatch } = useAppState();
 	const [focusState, setFocusState] = useState(AppState.currentState);
+	const [loadingStats, setLoadingStats] = useState(false);
 
 	const headerHeight = useHeaderHeight();
 	const openInstructions = () => {
@@ -89,10 +90,12 @@ const Board = ({ navigation }) => {
 	};
 
 	const getStats = async (endDate, additionalDays) => {
+		setLoadingStats(true);
 		const startDate =
 			additionalDays > 0 ? getStartDate(endDate, additionalDays) : endDate;
 
 		try {
+			console.log("trying");
 			// Default options are marked with *
 			const response = await fetch(
 				`https://api-oqlbag234q-uc.a.run.app/stats?startdate=${startDate}&enddate=${endDate}`,
@@ -104,11 +107,11 @@ const Board = ({ navigation }) => {
 				}
 			);
 
-			console.log("response: ", JSON.stringify(response));
-
 			if (!response.ok) {
 				// If the response status is not OK (e.g., 4xx or 5xx status code)
 				// You can throw an error or handle it accordingly
+				setLoadingStats(false);
+
 				throw new Error("Network response was not OK.");
 			}
 			const statsData = await response.json(); // Read and parse JSON response
@@ -119,10 +122,16 @@ const Board = ({ navigation }) => {
 				payload: statsData,
 			});
 			// If the response is successful, parse the JSON response
+			setLoadingStats(false);
 			return response; // parses JSON response into native JavaScript objects
 		} catch (error) {
 			// Handle any errors that occur during the fetch request
 			console.error("Error submitting the game:", error.message);
+			dispatch({
+				type: "showstats",
+				payload: null,
+			});
+			setLoadingStats(false);
 			throw error; // Re-throw the error to notify the caller about the error
 		}
 	};
@@ -140,15 +149,22 @@ const Board = ({ navigation }) => {
 
 	const ColumnHeader = () => (
 		<View style={styles.flexRowBetween}>
-			<Text style={{ fontWeight: "bold" }}>Rank</Text>
+			<Text style={{ fontWeight: "bold", textAlign: "left", width: 50 }}>
+				Rank
+			</Text>
 
-			<Text style={{ fontWeight: "bold" }}>Score</Text>
-			<Text style={{ fontWeight: "bold" }}>&#x1D453;</Text>
+			<Text style={{ fontWeight: "bold", textAlign: "center", width: 50 }}>
+				Score
+			</Text>
+			<Text style={{ fontWeight: "bold", textAlign: "right", width: 50 }}>
+				&#x1D453;
+			</Text>
 		</View>
 	);
 
 	const DayStat = (item) => {
-		console.log("item: ", item);
+		const [score, frequency] = item.item;
+
 		const backgroundColor =
 			state.totalScore == item.item[0]
 				? styles.bgLightGreen
@@ -156,19 +172,19 @@ const Board = ({ navigation }) => {
 				? styles.aliceBlue
 				: styles.bgWhite;
 		return (
-			<View style={[styles.flexRowBetween, backgroundColor]}>
+			<View
+				key={`${item.index}-stat`}
+				style={[styles.flexRowBetween, backgroundColor]}
+			>
 				<Text style={styles.scoreText}>{item.index + 1}</Text>
-				<Text style={styles.scoreText}>{item.item[0]}</Text>
-				<Text style={styles.scoreText}>{item.item[1]}</Text>
+				<Text style={styles.scoreText}>{score}</Text>
+				<Text style={styles.scoreText}>{frequency}</Text>
 			</View>
 		);
 	};
 
 	const renderStats = () => {
-		console.log(state.stats);
-		if (state.stats.length == 0) {
-			return <Text>Stats Unavailable</Text>;
-		}
+		console.log("state.stats: ", state.stats);
 
 		return (
 			<View style={styles.leaderboardContainer}>
@@ -177,13 +193,18 @@ const Board = ({ navigation }) => {
 				>
 					Leaderboard
 				</Text>
-				<FlatList
-					key={state.stats[0]} // Don't forget to add a unique key
-					ListHeaderComponent={ColumnHeader}
-					data={state.stats[0]["scores"]} // Assuming "scores" is the array you want to render in FlatList
-					renderItem={DayStat}
-					numColumns={5}
-				/>
+				{loadingStats && <ActivityIndicator />}
+				{!loadingStats && !state.stats && (
+					<Text style={(textAlign = "center")}>Stats Unavailable</Text>
+				)}
+				{!loadingStats && state.stats && state.stats.length > 0 && (
+					<FlatList
+						ListHeaderComponent={ColumnHeader}
+						data={state.stats[0]["scores"]} // Assuming "scores" is the array you want to render in FlatList
+						renderItem={DayStat}
+						numColumns={1}
+					/>
+				)}
 			</View>
 		);
 	};
@@ -206,34 +227,24 @@ const Board = ({ navigation }) => {
 			});
 		}
 	};
-	useEffect(() => {
-		const getLoad = async () => {
-			await loadState();
-		};
-		getLoad();
-		const appStateListener = AppState.addEventListener(
-			"change",
-			(nextAppState) => {
-				setFocusState(nextAppState);
-				if (nextAppState == "active") {
-					getLoad();
-				}
-			}
-		);
 
-		return () => {
-			appStateListener.remove(); // Remove the event listener when unmounting
-		};
-	}, []);
 	useEffect(() => {
 		const getLoad = async () => {
 			await loadState();
 		};
 		getLoad();
-	}, []);
+		if (state.gameOver == true) {
+			getStats(state.today, 0);
+		}
+	}, [state.gameOver]);
 	return (
 		<View
-			style={[styles.container, { height: windowHeight - useHeaderHeight() }]}
+			style={[
+				styles.container,
+				styles.margin_b_24,
+				styles.padding_b_24,
+				{ height: windowHeight - useHeaderHeight() },
+			]}
 		>
 			<View style={styles.section}>
 				<WordCounter style={styles.counter} gameOver={state.gameOver} />
@@ -256,20 +267,24 @@ const Board = ({ navigation }) => {
 						</Text>
 					</Pressable>
 				) : (
-					<>
-						{/* <Pressable onPress={() => { getStats(state.today, 0) }}>
-              <Text>Refresh stats</Text>
-            </Pressable> */}
-						<Text style={styles.score}>
+					<View id='stats-view' style={styles.section}>
+						<Pressable
+							onPress={() => {
+								getStats(state.today, 0);
+							}}
+						>
+							{loadingStats == false && <Text>Refresh</Text>}
+						</Pressable>
+						{/* <Text style={styles.score}>
 							Final Score: <Text style={styles.gold}>{state.totalScore}</Text>
-						</Text>
+						</Text> */}
 
-						{/* {renderStats()} */}
+						{renderStats()}
 						<Text>Tap board for score details.</Text>
-						<ShareScore />
-					</>
+					</View>
 				)}
 			</View>
+			<ShareScore style={styles.margin_b_24} />
 			<TouchableOpacity
 				style={styles.instructions}
 				onPress={() => openInstructions()}
@@ -295,7 +310,12 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		width: "100%",
+	},
+	margin_b_24: {
 		marginBottom: 24,
+	},
+	padding_b_24: {
+		paddingBottom: 24,
 	},
 	button: {
 		marginTop: 8,
@@ -346,6 +366,8 @@ const styles = StyleSheet.create({
 		borderColor: "black",
 		borderWidth: 3,
 		borderRadius: 5,
+		maxHeight: "80%",
+		padding: 2,
 	},
 	flexRowBetween: {
 		display: "flex",
