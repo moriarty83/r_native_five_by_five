@@ -153,7 +153,7 @@ const Board = ({ navigation }) => {
 				Rank
 			</Text>
 
-			<Text style={{ fontWeight: "bold", textAlign: "center", width: 50 }}>
+			<Text style={{ fontWeight: "bold", textAlign: "center", width: 60 }}>
 				Score
 			</Text>
 			<Text style={{ fontWeight: "bold", textAlign: "right", width: 50 }}>
@@ -284,7 +284,9 @@ const Board = ({ navigation }) => {
 					</View>
 				)}
 			</View>
-			<ShareScore style={styles.margin_b_24} />
+			{state.gameOver == true ? (
+				<ShareScore style={styles.margin_b_24} />
+			) : null}
 			<TouchableOpacity
 				style={styles.instructions}
 				onPress={() => openInstructions()}
