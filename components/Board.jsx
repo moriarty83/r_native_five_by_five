@@ -217,6 +217,7 @@ const Board = ({ navigation }) => {
 			savedState.today &&
 			savedState.today == tempToday
 		) {
+			console.log(savedState.gameOver);
 			dispatch({
 				type: "load",
 				payload: savedState,
@@ -228,14 +229,36 @@ const Board = ({ navigation }) => {
 		}
 	};
 
+	const getLoad = async () => {
+		await loadState();
+	};
+
+	const handleAppStateChange = (nextAppState) => {
+		console.log("handleAppStateChange", nextAppState);
+		setFocusState(nextAppState); // Update the app state
+		if (nextAppState == "active") {
+			getLoad();
+			console.log("state.gameOver: ", state.gameOver);
+			if (state.gameOver == true) {
+				getStats(state.today, 0);
+			}
+		}
+	};
+
 	useEffect(() => {
-		const getLoad = async () => {
-			await loadState();
-		};
 		getLoad();
+		console.log("state.gameOver: ", state.gameOver);
 		if (state.gameOver == true) {
 			getStats(state.today, 0);
 		}
+		const appStateSubscription = AppState.addEventListener(
+			"change",
+			handleAppStateChange
+		);
+
+		return () => {
+			appStateSubscription.remove();
+		};
 	}, [state.gameOver]);
 	return (
 		<View
